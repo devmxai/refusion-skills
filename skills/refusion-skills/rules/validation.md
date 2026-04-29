@@ -59,6 +59,19 @@ No URLs unless the user and engine explicitly support that asset path.
 - Use stable semantic IDs, not random UUID-like names.
 - Do not create excessive layers for a simple scene.
 
+## Mask Reveal And Shape Morph
+
+- Use `kind: "mask"` only when a visible target must be revealed by a matte or
+  wipe.
+- A mask element should declare `maskTarget`, `maskMode`, and
+  `revealDirection` so the timeline remains understandable when opened later.
+- `movingMaskReveal` and `maskReveal` values are normalized progress values
+  from `0.0` to `1.0`.
+- Shape morphs should animate canonical `width`, `height`, and
+  `cornerRadius`, or use the supported aliases `morphSize` and `roundness`.
+- Do not make shape morphs by swapping separate layers on/off unless the prompt
+  explicitly requests a hard cut.
+
 ## Typewriter
 
 Correct:

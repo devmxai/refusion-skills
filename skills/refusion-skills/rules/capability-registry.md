@@ -112,6 +112,10 @@ Supported basics:
 
 - transform position/scale/rotation/opacity;
 - width/height/cornerRadius for shapes;
+- shape morph aliases `morphSize` and `roundness` lower to editable
+  width/height/cornerRadius channels;
+- `mask` scene elements and `movingMaskReveal`/`maskReveal` lower to editable
+  `mask.revealProgress` graph channels with preserved mask metadata;
 - color;
 - blur;
 - typewriter progress;
@@ -126,7 +130,7 @@ Needs dedicated engine work before being treated as real:
 - glow;
 - light sweep;
 - gradient ramp;
-- moving masks;
+- preview/export compositing for moving masks;
 - parent groups;
 - 2.5D/3D camera, lights, z-depth;
 - counters and chart primitives.

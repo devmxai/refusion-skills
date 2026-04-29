@@ -234,6 +234,7 @@ Supported element kinds:
 - `text`
 - `image`
 - `icon`
+- `mask`
 
 Supported shape kinds:
 
@@ -241,6 +242,7 @@ Supported shape kinds:
 - `roundedRectangle`
 - `circle`
 - `line`
+- `mask`
 
 Shape example:
 
@@ -295,6 +297,41 @@ Icon example:
 }
 ```
 
+Mask reveal example:
+
+```json
+{
+  "id": "title-wipe-mask",
+  "kind": "mask",
+  "properties": {
+    "maskTarget": "title-text",
+    "maskMode": "alpha",
+    "revealDirection": "leftToRight",
+    "position": { "x": -320, "y": 0 },
+    "width": 90,
+    "height": 180,
+    "color": "#FFFFFF",
+    "opacity": 1
+  },
+  "channels": [
+    {
+      "property": "movingMaskReveal",
+      "keyframes": [
+        { "timeMs": 900, "value": 0.0, "easing": "linear" },
+        { "timeMs": 1500, "value": 1.0, "easing": "easeOutCubic" }
+      ]
+    },
+    {
+      "property": "position",
+      "keyframes": [
+        { "timeMs": 900, "value": { "x": -320, "y": 0 }, "easing": "easeOutCubic" },
+        { "timeMs": 1500, "value": { "x": 320, "y": 0 }, "easing": "easeOutCubic" }
+      ]
+    }
+  ]
+}
+```
+
 ## Supported Properties
 
 Use these properties in `properties` and `channels`:
@@ -312,6 +349,10 @@ Use these properties in `properties` and `channels`:
 - `width`
 - `height`
 - `cornerRadius`
+- `morphSize`: `{ "width": 96, "height": 96 }`
+- `roundness`
+- `movingMaskReveal`
+- `maskReveal`
 - `fontSize`
 - `letterSpacing`
 - `typewriterProgress`
@@ -322,6 +363,11 @@ Preferred canonical names:
 
 - use `color`, not `backgroundColor`;
 - use `cornerRadius`, not `radius`;
+- use `width`/`height`/`cornerRadius` for canonical shape morphs, or
+  `morphSize`/`roundness` when describing a circle-to-bar style morph;
+- use `mask` elements with `maskTarget`, `maskMode`, and `movingMaskReveal`
+  when describing a travelling matte/wipe. Do not fake a mask by making many
+  one-frame text or shape layers;
 - use `typewriterProgress`, not one text element per character;
 - use `startMs`, `durationMs`, and `timeMs` as numeric values.
 
@@ -838,6 +884,10 @@ Supported basics:
 
 - transform position/scale/rotation/opacity;
 - width/height/cornerRadius for shapes;
+- shape morph aliases `morphSize` and `roundness` lower to editable
+  width/height/cornerRadius channels;
+- `mask` scene elements and `movingMaskReveal`/`maskReveal` lower to editable
+  `mask.revealProgress` graph channels with preserved mask metadata;
 - color;
 - blur;
 - typewriter progress;
@@ -852,7 +902,7 @@ Needs dedicated engine work before being treated as real:
 - glow;
 - light sweep;
 - gradient ramp;
-- moving masks;
+- preview/export compositing for moving masks;
 - parent groups;
 - 2.5D/3D camera, lights, z-depth;
 - counters and chart primitives.
@@ -1057,6 +1107,19 @@ No URLs unless the user and engine explicitly support that asset path.
 - Every animation is represented by a channel with sorted keyframes.
 - Use stable semantic IDs, not random UUID-like names.
 - Do not create excessive layers for a simple scene.
+
+## Mask Reveal And Shape Morph
+
+- Use `kind: "mask"` only when a visible target must be revealed by a matte or
+  wipe.
+- A mask element should declare `maskTarget`, `maskMode`, and
+  `revealDirection` so the timeline remains understandable when opened later.
+- `movingMaskReveal` and `maskReveal` values are normalized progress values
+  from `0.0` to `1.0`.
+- Shape morphs should animate canonical `width`, `height`, and
+  `cornerRadius`, or use the supported aliases `morphSize` and `roundness`.
+- Do not make shape morphs by swapping separate layers on/off unless the prompt
+  explicitly requests a hard cut.
 
 ## Typewriter
 
