@@ -475,6 +475,9 @@ Rules:
 - beats stay inside scene duration;
 - beats have positive duration;
 - every beat declares componentRefs;
+- every primitive must reference an existing owning beat;
+- the owning beat must include the primitive target component in componentRefs;
+- every primitive must stay inside its owning beat time range;
 - important text/UI states need a readable hold beat;
 - overlaps are intentional only when components are disjoint or the handoff is
   explicit and same-property conflict does not exist.
@@ -565,6 +568,9 @@ Every scene must end cleanly:
 - no layer cuts before its final motion;
 - no hidden random motion after the final beat;
 - final state has enough visual contrast.
+- visible components should not finish their final motion on the exact scene
+  boundary without a resolve/hold moment. Extend the scene or add a final hold
+  unless the component is a background, transition cover, or mask.
 
 ## Current Engine Support
 
@@ -580,6 +586,12 @@ Current enforced rules:
 - component timing lifetimes are derived for future compiler use;
 - Scene Program timing checks can detect duplicate channels and keyframes
   outside a layer span.
+- primitives must be owned by a real beat that references the animated
+  component and contains the primitive time range.
+- empty Scene Program channels are rejected; every channel must include
+  keyframes or be removed.
+- visible components whose final motion ends exactly at the scene boundary now
+  produce a completion warning so agents add a resolve/hold moment.
 - the Director compiler merges sequential primitives for the same
   component/property into one ordered Scene Program channel before lowering.
   For same-time handoffs, keep one editable keyframe at that time; the later
@@ -1015,11 +1027,17 @@ No URLs unless the user and engine explicitly support that asset path.
 - `durationMs`, `startMs`, `endMs`, `timeMs`, and `frameRate` are numbers.
 - Beats stay inside `durationMs`.
 - Primitives stay inside owning beats.
+- Primitive `beatId` points to an existing beat.
+- The owning beat includes the primitive `targetComponentId` in
+  `componentRefs`.
 - Layer `durationMs` covers all local keyframes.
 - Project-time channels declare `timeBasis: "project"`.
+- No empty channels. Remove channels without keyframes.
 - No same-target/same-property overlap unless deliberately authored as one
   ordered channel.
 - Scene does not end before all child motion completes.
+- Visible component final motion should not land exactly on the final scene
+  boundary without a resolve/hold moment.
 - Text has readable hold when important.
 
 ## Director Plan Alignment

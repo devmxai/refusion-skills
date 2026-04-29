@@ -28,11 +28,17 @@ No URLs unless the user and engine explicitly support that asset path.
 - `durationMs`, `startMs`, `endMs`, `timeMs`, and `frameRate` are numbers.
 - Beats stay inside `durationMs`.
 - Primitives stay inside owning beats.
+- Primitive `beatId` points to an existing beat.
+- The owning beat includes the primitive `targetComponentId` in
+  `componentRefs`.
 - Layer `durationMs` covers all local keyframes.
 - Project-time channels declare `timeBasis: "project"`.
+- No empty channels. Remove channels without keyframes.
 - No same-target/same-property overlap unless deliberately authored as one
   ordered channel.
 - Scene does not end before all child motion completes.
+- Visible component final motion should not land exactly on the final scene
+  boundary without a resolve/hold moment.
 - Text has readable hold when important.
 
 ## Director Plan Alignment
