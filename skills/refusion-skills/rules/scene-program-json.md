@@ -237,6 +237,10 @@ Use these properties in `properties` and `channels`:
 - `lineHeight`: text line-height multiplier, usually `1.0` to `1.3`
 - `textAlign`: `left`, `center`, or `right`
 - `letterSpacing`
+- `trackingAmount`: alias for `letterSpacing`
+- `wordRangeSelectorProgress`: After Effects-style word range reveal, `0.0`
+  to `1.0`
+- `letterRangeSelectorProgress`: character range reveal, `0.0` to `1.0`
 - `typewriterProgress`
 - `typingProgress`
 - `reveal`
@@ -262,6 +266,9 @@ Preferred canonical names:
   close natural spacing unless the user explicitly asks for contrast. Vary the
   motion timing, not random font sizes.
 - use `typewriterProgress`, not one text element per character;
+- use `wordRangeSelectorProgress` for After Effects-style title reveals by
+  words, `letterRangeSelectorProgress` for character reveal, and
+  `trackingAmount` when the tutorial says Tracking Amount;
 - use `startMs`, `durationMs`, and `timeMs` as numeric values.
 
 Shadow support status:

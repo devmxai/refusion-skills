@@ -123,6 +123,8 @@ Supported basics:
 - soft shadow/drop shadow for shape/icon preview and editable scalar shape
   scope controls;
 - typewriter progress;
+- text range selector aliases for word/letter reveal lower to editable
+  `revealProgress`, and tracking aliases lower to editable `letterSpacing`;
 - core icon pack;
 - scene clip container and nested editable layers.
 
@@ -130,7 +132,8 @@ Needs dedicated engine work before being treated as real:
 
 - trim path export parity, circular progress, arcs, dashed paths, and
   wraparound offset rendering;
-- text range selector by word/character;
+- advanced per-word/per-character transform offsets beyond the current visible
+  text reveal and tracking foundation;
 - text shadow and export-perfect authored visual shadows;
 - glow;
 - light sweep;

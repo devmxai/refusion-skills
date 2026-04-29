@@ -372,6 +372,10 @@ Use these properties in `properties` and `channels`:
 - `lineHeight`: text line-height multiplier, usually `1.0` to `1.3`
 - `textAlign`: `left`, `center`, or `right`
 - `letterSpacing`
+- `trackingAmount`: alias for `letterSpacing`
+- `wordRangeSelectorProgress`: After Effects-style word range reveal, `0.0`
+  to `1.0`
+- `letterRangeSelectorProgress`: character range reveal, `0.0` to `1.0`
 - `typewriterProgress`
 - `typingProgress`
 - `reveal`
@@ -397,6 +401,9 @@ Preferred canonical names:
   close natural spacing unless the user explicitly asks for contrast. Vary the
   motion timing, not random font sizes.
 - use `typewriterProgress`, not one text element per character;
+- use `wordRangeSelectorProgress` for After Effects-style title reveals by
+  words, `letterRangeSelectorProgress` for character reveal, and
+  `trackingAmount` when the tutorial says Tracking Amount;
 - use `startMs`, `durationMs`, and `timeMs` as numeric values.
 
 Shadow support status:
@@ -958,6 +965,8 @@ Supported basics:
 - soft shadow/drop shadow for shape/icon preview and editable scalar shape
   scope controls;
 - typewriter progress;
+- text range selector aliases for word/letter reveal lower to editable
+  `revealProgress`, and tracking aliases lower to editable `letterSpacing`;
 - core icon pack;
 - scene clip container and nested editable layers.
 
@@ -965,7 +974,8 @@ Needs dedicated engine work before being treated as real:
 
 - trim path export parity, circular progress, arcs, dashed paths, and
   wraparound offset rendering;
-- text range selector by word/character;
+- advanced per-word/per-character transform offsets beyond the current visible
+  text reveal and tracking foundation;
 - text shadow and export-perfect authored visual shadows;
 - glow;
 - light sweep;
