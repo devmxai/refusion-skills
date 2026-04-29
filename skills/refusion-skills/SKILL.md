@@ -56,6 +56,10 @@ executable scene.
 - For preflight checks before returning JSON, read
   [rules/validation.md](rules/validation.md).
 
+If your environment cannot open these relative rule files, use the repository
+root file `REFUSION_SCENE_SKILL_FULL.md` instead. It contains this skill, every
+rule file, and the example JSON in one document.
+
 ## Non-Negotiable Professional Rules
 
 - Do not create random simultaneous animation.
