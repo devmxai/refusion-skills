@@ -152,9 +152,22 @@ Every scene must end cleanly:
 - no hidden random motion after the final beat;
 - final state has enough visual contrast.
 
-## Current Engine Warning
+## Current Engine Support
 
-Until the full Professional Scene Timing Contract is implemented in the app:
+The ReFusion engine now includes an initial domain-only
+`ProfessionalSceneTimingContractValidator`.
+
+Current enforced rules:
+
+- text reveal/typewriter primitives need an explicit readable hold beat after
+  the reveal;
+- a text reveal may not end exactly at the scene boundary;
+- overlapping same-target/same-property primitives are invalid;
+- component timing lifetimes are derived for future compiler use;
+- Scene Program timing checks can detect duplicate channels and keyframes
+  outside a layer span.
+
+Current caution:
 
 - avoid multiple channels for the same target/property;
 - avoid ambiguous overlaps;
