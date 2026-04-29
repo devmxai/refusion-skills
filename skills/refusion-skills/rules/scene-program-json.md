@@ -214,6 +214,13 @@ Use these properties in `properties` and `channels`:
 - `width`
 - `height`
 - `cornerRadius`
+- `shadowOpacity`: `0.0` to `1.0`, shape/icon only
+- `shadowBlur`: canvas-pixel blur radius, shape/icon only
+- `shadowOffset`: `{ "x": 0, "y": 18 }`, shape/icon only
+- `shadowOffsetX`
+- `shadowOffsetY`
+- `shadowSpread`: canvas-pixel spread radius, shape/icon only
+- `shadowColor`: `"#RRGGBB"` or `"#AARRGGBB"`, shape/icon only
 - `morphSize`: `{ "width": 96, "height": 96 }`
 - `roundness`
 - `movingMaskReveal`
@@ -235,6 +242,10 @@ Preferred canonical names:
 - use `cornerRadius`, not `radius`;
 - use `width`/`height`/`cornerRadius` for canonical shape morphs, or
   `morphSize`/`roundness` when describing a circle-to-bar style morph;
+- use `shadowOpacity`, `shadowBlur`, `shadowOffset`, `shadowSpread`, and
+  `shadowColor` for supported shape/icon soft shadows. Accepted aliases include
+  `softShadowOpacity`, `dropShadowOpacity`, `softShadowBlur`,
+  `dropShadowBlur`, `softShadowOffset`, and `dropShadowOffset`;
 - use `mask` elements with `maskTarget`, `maskMode`, and `movingMaskReveal`
   when describing a travelling matte/wipe. Do not fake a mask by making many
   one-frame text or shape layers;
@@ -244,6 +255,13 @@ Preferred canonical names:
   motion timing, not random font sizes.
 - use `typewriterProgress`, not one text element per character;
 - use `startMs`, `durationMs`, and `timeMs` as numeric values.
+
+Shadow support status:
+
+- supported now for shape/icon preview and editable scalar Shape Scope lanes;
+- not supported as text shadow yet;
+- not export-perfect yet, so do not promise final native export parity for
+  shadows until the authored visual compositor explicitly supports it.
 
 ## Channels And Keyframes
 

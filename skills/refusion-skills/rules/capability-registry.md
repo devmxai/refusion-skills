@@ -118,6 +118,8 @@ Supported basics:
   `mask.revealProgress` graph channels with preserved mask metadata;
 - color;
 - blur;
+- soft shadow/drop shadow for shape/icon preview and editable scalar shape
+  scope controls;
 - typewriter progress;
 - core icon pack;
 - scene clip container and nested editable layers.
@@ -126,7 +128,7 @@ Needs dedicated engine work before being treated as real:
 
 - trim paths;
 - text range selector by word/character;
-- soft shadow/drop shadow;
+- text shadow and export-perfect authored visual shadows;
 - glow;
 - light sweep;
 - gradient ramp;
