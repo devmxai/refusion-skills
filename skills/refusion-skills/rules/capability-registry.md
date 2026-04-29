@@ -52,6 +52,9 @@ Layout
   alignCenter
   safeArea
   padding
+  gap
+  align
+  justify
   readableHold
 
 Composition
@@ -125,6 +128,11 @@ Supported basics:
 - typewriter progress;
 - text range selector aliases for word/letter reveal lower to editable
   `revealProgress`, and tracking aliases lower to editable `letterSpacing`;
+- layout/parent metadata (`parentId`, `containerId`, `parentGroup`,
+  `layoutRole`, `layoutMode`, `padding`, `gap`, `align`, `justify`, `anchor`,
+  `safeArea`, `constraints`, `zIndex`) is validated during authoring and
+  preserved on lowered elements for future Scene Scope, Layer Scope, mention,
+  preview, and export adapters;
 - core icon pack;
 - scene clip container and nested editable layers.
 
@@ -139,7 +147,7 @@ Needs dedicated engine work before being treated as real:
 - light sweep;
 - gradient ramp;
 - preview/export compositing for moving masks;
-- parent groups;
+- parent-group transform evaluation and inherited child transforms;
 - 2.5D/3D camera, lights, z-depth;
 - counters and chart primitives.
 

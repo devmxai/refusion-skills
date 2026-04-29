@@ -271,6 +271,72 @@ Preferred canonical names:
   `trackingAmount` when the tutorial says Tracking Amount;
 - use `startMs`, `durationMs`, and `timeMs` as numeric values.
 
+## Layout And Parent Metadata
+
+Do not rely on fixed ready-made card templates. Build UI from primitive
+elements and describe their hierarchy with metadata so ReFusion can keep the
+result inspectable and editable.
+
+Use container/group elements:
+
+```json
+{
+  "id": "prompt-shell",
+  "kind": "shape",
+  "properties": {
+    "shapeKind": "roundedRectangle",
+    "layoutRole": "container",
+    "layoutMode": "absolute",
+    "padding": 32,
+    "gap": 18,
+    "align": "center",
+    "width": 820,
+    "height": 104,
+    "cornerRadius": 52,
+    "color": "#121826",
+    "opacity": 1
+  }
+}
+```
+
+Attach child elements:
+
+```json
+{
+  "id": "prompt-text",
+  "kind": "text",
+  "text": "build an app",
+  "properties": {
+    "parentId": "prompt-shell",
+    "layout": {
+      "role": "content",
+      "align": "centerLeft",
+      "padding": 24
+    },
+    "position": { "x": -180, "y": 0 },
+    "fontSize": 38,
+    "color": "#FFFFFF",
+    "opacity": 1
+  }
+}
+```
+
+Accepted metadata keys:
+
+- `parentId`, `containerId`, `parentGroup`
+- `layoutRole`, `layoutMode`
+- `padding`, `gap`, `align`, `justify`, `anchor`
+- `safeArea`, `constraints`, `zIndex`
+
+Strict contract:
+
+- every parent id must reference a real element in the Scene Program;
+- parent chains may not contain cycles;
+- child layer lifetime must stay inside parent layer lifetime;
+- a parent should declare `layoutRole: "container"` or `layoutRole: "group"`;
+- inherited group transforms are not active yet, so still write concrete
+  positions/channels for each visible child.
+
 Shadow support status:
 
 - supported now for shape/icon preview and editable scalar Shape Scope lanes;
