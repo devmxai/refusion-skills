@@ -1071,8 +1071,17 @@ Playback and scrub projection:
 - empty timeline time is real. If the playhead is on a gap before, between, or
   after Scene Contents media layers, preview must be blank/transparent instead
   of falling back to the previous, next, or first visual asset. A native preview
-  transport may use a compact media program internally, but it must map into
-  that compact program only while the playhead is inside a real media interval;
+  transport may use a compact media program internally, but raw authored
+  source-scene time must never be passed through as compact media-program time.
+  If an authored gap needs a native settle coordinate, clamp to the nearest
+  compact media-program boundary while keeping the visible preview blank;
+- Scene Contents transitions must resolve against scene-video layer proxies,
+  not only root media clips. Preserve the proxy's source asset identity so the
+  bridge preview can warm outgoing/incoming thumbnails, and keep native preview
+  enabled even when the current playhead time is an authored gap;
+- do not clear Scene Contents clip/transition selection or open a transition
+  inspector while scrub, native handoff, or a structural edit is in progress;
+  selection changes must not tear down playback/scrub state mid-gesture;
 - project composition aspect is authoritative after composition creation.
   Imported media metadata and native rendered video dimensions must not flip,
   resize, or relock the composition canvas;
