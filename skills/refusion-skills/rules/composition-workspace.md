@@ -55,6 +55,16 @@ Layer scope:
 - keyframes;
 - interpolation.
 
+Scene Contents Add:
+
+- belongs to the open source scene, not the root composition;
+- inserts scene-local layers when the app supports that layer kind;
+- currently supports video/image import and graph-backed text/shape layer
+  creation from the same Add gateway;
+- shows audio, null, and adjustment layers as planned layer kinds until their
+  engines are wired;
+- must not be confused with Layer Scope keyframe/property Add tools.
+
 ## When Creating A New Scene
 
 If the user asks for a new scene from scratch, return one complete scene:
