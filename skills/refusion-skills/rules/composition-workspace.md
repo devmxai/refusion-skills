@@ -106,6 +106,11 @@ Playback and scrub projection:
 - Scene Contents native preview/scrub uses scene-local transport time while the
   app clock remains in root composition time. Always map `root <-> scene local`
   at the preview transport boundary;
+- if a scoped timeline contains playable video, route scrub start/end through
+  the same native settle handoff used by the root timeline. Do not immediately
+  mark `scrubSettled` after finger lift while a native video surface is active;
+  wait until native transport reaches the mapped scene-local target frame, then
+  reveal/adopt the settled player frame;
 - never solve playback by duplicating nested media as fake root timeline clips;
 - if a scene contains a video/image layer, preserve its `sourceBinding.assetId`
   and timing so the host can project it into real preview/scrub media
