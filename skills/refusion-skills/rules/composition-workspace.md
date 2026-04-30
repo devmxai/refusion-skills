@@ -65,13 +65,13 @@ Layer scope:
 - keyframes;
 - interpolation.
 
-Scene Contents Add:
+Scene Contents Media:
 
 - belongs to the open source scene, not the root composition;
-- inserts scene-local layers when the app supports that layer kind;
-- currently supports video/image import and graph-backed text/shape layer
-  creation from the same Add gateway;
-- shows audio, null, and adjustment layers as planned layer kinds until their
+- opens only video/image import for scene-local media layers;
+- must not include Text, Shape, Audio, Null, or Adjustment in the media sheet;
+- Text and Shape are direct Scene Contents dock commands;
+- Audio, Null, and Adjustment are visible planned dock commands until their
   engines are wired;
 - must not be confused with Layer Scope keyframe/property Add tools.
 
