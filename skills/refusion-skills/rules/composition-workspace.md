@@ -97,6 +97,17 @@ Scene Contents Media:
   selectable transition bridge. Treat this bridge as a real transition intent
   between the two scene-local video layers, not as empty timeline space or a
   hidden effect on only one layer;
+- Scene Contents video clips shown in the editor are scene-layer proxies. They
+  may expose video timing, drag, and transition bridges, but they must not be
+  authored as fake root media clips or force the source scene timeline to become
+  the compact native media program;
+- the transition bridge browser order is `Preset`, `Manual`, then
+  `AI Transition`. `Preset` should drill into a picker with a back action and
+  only list transitions the engine can currently evaluate (`Cross Dissolve`,
+  `Fade Black`, `Zoom In Camera` until more real effects are wired);
+- applying a Scene Contents preset should return directly to the timeline so
+  play and Live Scrub remain available. Open an inspector only when the user
+  taps an existing transition or explicitly chooses an edit/manual path;
 - manual/preset/AI transition choices may be staged before full renderer parity,
   but the authored scene must preserve a clear boundary, stable left/right
   layer IDs, and enough timing for the host app to open a future transition
