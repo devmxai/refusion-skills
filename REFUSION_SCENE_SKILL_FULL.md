@@ -1038,6 +1038,14 @@ Playback and scrub projection:
   media layers;
 - preview/playback and Live Scrub may receive a derived media-track projection
   from the currently open Scene Scope or root Scene Clip sequence;
+- any Scene Contents edit that changes playable video timing or inserts/removes
+  playable video must run through the same structural media commit used by root
+  timeline media edits: pause/guard active playback, prepare the projected
+  native media program, prime projected scrub sources, flush native scrub config,
+  wait for readiness, and only then allow play/scrub samples to drive the clock;
+- full-interval projected media clips must keep stable identities when another
+  video is added. Do not let visible-interval projection rename an unchanged clip
+  and churn Live Scrub store keys;
 - Scene Contents video insertion must preserve the video asset's natural
   duration. If the asset runs past the current Scene Clip duration, extend the
   source composition and Scene Clip instance together and shift later sequential
