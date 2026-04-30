@@ -76,6 +76,19 @@ Scene Contents Media:
   engines are wired;
 - must not be confused with Layer Scope keyframe/property Add tools.
 
+Playback and scrub projection:
+
+- media inside a Scene Clip remains an internal scene layer in the editable
+  graph;
+- the root timeline should still show one Scene Clip container, not all nested
+  media layers;
+- preview/playback and Live Scrub may receive a derived media-track projection
+  from the currently open Scene Scope or root Scene Clip sequence;
+- never solve playback by duplicating nested media as fake root timeline clips;
+- if a scene contains a video/image layer, preserve its `sourceBinding.assetId`
+  and timing so the host can project it into real preview/scrub media
+  descriptors.
+
 ## When Creating A New Scene
 
 If the user asks for a new scene from scratch, return one complete scene:
