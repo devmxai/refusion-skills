@@ -120,6 +120,15 @@ Playback and scrub projection:
   under a higher video remains real elapsed source time for the lower video, so
   when that lower video becomes visible it must continue from its true source
   offset instead of frame zero;
+- empty timeline time is real. If the playhead is on a gap before, between, or
+  after Scene Contents media layers, preview must be blank/transparent instead
+  of falling back to the previous, next, or first visual asset. A native preview
+  transport may use a compact media program internally, but it must map into
+  that compact program only while the playhead is inside a real media interval;
+- moving a Scene Contents layer may extend the source composition and the
+  owning Scene Clip instance when the moved layer ends after the current scene
+  duration. Do not clamp a full-duration layer to start time zero just because
+  its current duration equals the scene duration;
 - Scene Contents row order must match preview draw order: the visually higher
   row is the higher-priority layer (`zIndex`, then insertion order);
 - never solve playback by duplicating nested media as fake root timeline clips;
