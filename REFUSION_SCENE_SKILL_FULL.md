@@ -1023,6 +1023,15 @@ Playback and scrub projection:
   duration. If the asset runs past the current Scene Clip duration, extend the
   source composition and Scene Clip instance together and shift later sequential
   Scene Clips forward;
+- Scene Contents media timing has two clocks: authored composition/source time
+  and compact native media-program time. Native duration is transport-internal
+  only and must never replace the visible timeline duration of a composition,
+  source scene, Scene Clip, or scoped layer timeline;
+- `MotionLayerModel.visibleRange` owns source-scene placement. Newly inserted
+  media elements should use layer-local `localRange` values, normally
+  `0..layer.duration`, so moving a layer does not double-offset the element.
+  Legacy scene-absolute element ranges may be read for compatibility, but new
+  authoring must prefer layer-local ranges;
 - Scene Contents native preview/scrub uses scene-local transport time while the
   app clock remains in root composition time. Always map `root <-> scene local`
   at the preview transport boundary;
@@ -1045,6 +1054,9 @@ Playback and scrub projection:
   of falling back to the previous, next, or first visual asset. A native preview
   transport may use a compact media program internally, but it must map into
   that compact program only while the playhead is inside a real media interval;
+- project composition aspect is authoritative after composition creation.
+  Imported media metadata and native rendered video dimensions must not flip,
+  resize, or relock the composition canvas;
 - moving a Scene Contents layer may extend the source composition and the
   owning Scene Clip instance when the moved layer ends after the current scene
   duration. Do not clamp a full-duration layer to start time zero just because
