@@ -176,6 +176,10 @@ Playback and scrub projection:
   not only root media clips. Preserve the proxy's source asset identity so the
   bridge preview can warm outgoing/incoming thumbnails, and keep native preview
   enabled even when the current playhead time is an authored gap;
+- transitions authored inside Scene Contents must remain visible when the root
+  timeline plays the containing Scene Clip. Resolve the active root Scene Clip,
+  map root time into scene-local time, and reuse the Scene Contents transition
+  preview path instead of requiring the Scene Scope to be open;
 - do not clear Scene Contents clip/transition selection or open a transition
   inspector while scrub, native handoff, or a structural edit is in progress;
   selection changes must not tear down playback/scrub state mid-gesture;
