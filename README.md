@@ -13,6 +13,7 @@ skills/refusion-skills/
 │   ├── professional-timing-contract.md
 │   ├── choreography.md
 │   ├── composition-workspace.md
+│   ├── transitions.md
 │   ├── capability-registry.md
 │   ├── tutorial-intake.md
 │   └── validation.md
@@ -51,6 +52,7 @@ skills/refusion-skills/rules/scene-program-json.md
 skills/refusion-skills/rules/professional-timing-contract.md
 skills/refusion-skills/rules/choreography.md
 skills/refusion-skills/rules/composition-workspace.md
+skills/refusion-skills/rules/transitions.md
 skills/refusion-skills/rules/capability-registry.md
 skills/refusion-skills/rules/tutorial-intake.md
 skills/refusion-skills/rules/validation.md
@@ -64,6 +66,7 @@ Direct browser links:
 - [Professional Timing Contract](https://github.com/devmxai/refusion-skills/blob/main/skills/refusion-skills/rules/professional-timing-contract.md)
 - [Choreography](https://github.com/devmxai/refusion-skills/blob/main/skills/refusion-skills/rules/choreography.md)
 - [Composition Workspace](https://github.com/devmxai/refusion-skills/blob/main/skills/refusion-skills/rules/composition-workspace.md)
+- [Transitions](https://github.com/devmxai/refusion-skills/blob/main/skills/refusion-skills/rules/transitions.md)
 - [Capability Registry](https://github.com/devmxai/refusion-skills/blob/main/skills/refusion-skills/rules/capability-registry.md)
 - [Tutorial Intake](https://github.com/devmxai/refusion-skills/blob/main/skills/refusion-skills/rules/tutorial-intake.md)
 - [Validation](https://github.com/devmxai/refusion-skills/blob/main/skills/refusion-skills/rules/validation.md)

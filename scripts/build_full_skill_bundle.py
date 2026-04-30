@@ -15,6 +15,7 @@ SOURCES = [
     ),
     ("Choreography Rule", "skills/refusion-skills/rules/choreography.md"),
     ("Composition Workspace Rule", "skills/refusion-skills/rules/composition-workspace.md"),
+    ("Transition Authoring Rule", "skills/refusion-skills/rules/transitions.md"),
     ("Capability Registry Rule", "skills/refusion-skills/rules/capability-registry.md"),
     ("Tutorial Intake Rule", "skills/refusion-skills/rules/tutorial-intake.md"),
     ("Validation Rule", "skills/refusion-skills/rules/validation.md"),

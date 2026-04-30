@@ -51,6 +51,9 @@ executable scene.
 - For composition-first workflow, Scene Clip containers, root/scene/layer scope
   responsibilities, and editing existing scenes or mentioned elements, read
   [rules/composition-workspace.md](rules/composition-workspace.md).
+- For transitions between clips/scenes, boundary-frame truth, and the
+  professional Zoom In Camera contract, read
+  [rules/transitions.md](rules/transitions.md).
 - For supported and planned capabilities, categories, and how new tutorial
   tools should be registered, read
   [rules/capability-registry.md](rules/capability-registry.md).
@@ -79,6 +82,10 @@ rule file, and the example JSON in one document.
   scatter one scene across many root timeline clips.
 - Existing-scene or `@mention` edits must target stable existing IDs and must
   not create unrelated new elements.
+- Transitions must be seam-aware boundary effects: outgoing uses the last
+  visible frame of A, incoming uses the first visible frame of B, and zoom
+  transitions must use speed, blur, and deterministic impact motion rather than
+  generic thumbnails.
 
 ## Current Engine Boundary
 
