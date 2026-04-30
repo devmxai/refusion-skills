@@ -1000,6 +1000,13 @@ Playback and scrub projection:
   media layers;
 - preview/playback and Live Scrub may receive a derived media-track projection
   from the currently open Scene Scope or root Scene Clip sequence;
+- Scene Contents video insertion must preserve the video asset's natural
+  duration. If the asset runs past the current Scene Clip duration, extend the
+  source composition and Scene Clip instance together and shift later sequential
+  Scene Clips forward;
+- Scene Contents native preview/scrub uses scene-local transport time while the
+  app clock remains in root composition time. Always map `root <-> scene local`
+  at the preview transport boundary;
 - never solve playback by duplicating nested media as fake root timeline clips;
 - if a scene contains a video/image layer, preserve its `sourceBinding.assetId`
   and timing so the host can project it into real preview/scrub media
