@@ -73,6 +73,11 @@ Layer scope:
   with graph-evaluated transform/opacity/blur samples for preview/scrub/play.
   Export must still declare whether the authored video surface renderer is
   available instead of silently dropping those properties.
+- export blockers must name authored visual kinds explicitly. If a scene uses a
+  video layer surface, the export contract must carry `videoClip` with its
+  source asset identity and graph channels, and the parity gate must say that
+  video authored visual rendering is blocked until the native renderer ships.
+  Do not collapse video/image/shape/mask export gaps into a vague warning.
 - interpolation.
 
 Scene Contents Media:
