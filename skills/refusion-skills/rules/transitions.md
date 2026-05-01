@@ -345,6 +345,8 @@ Each tile plan must preserve:
 - source role: `outgoing` or `incoming`;
 - input accumulator id;
 - sample count, decoded sample count, and whether input samples are decodable;
+- `liveDecodeStreamCoverageReady`;
+- `continuousSampleCoverageReady`;
 - edge mode, usually `mirrorTile`;
 - output overscan scale;
 - `clipToCanvas=true`;
@@ -356,6 +358,8 @@ The tiling session may be planned before a real implementation exists, but it
 must report `tilerImplemented=false` and block transition exposure with
 `native_mirror_edge_tiler_missing`. If temporal inputs are not decodable, it
 must also block with `native_mirror_edge_input_samples_not_ready`.
+If temporal inputs are not backed by live stream coverage, it must also block
+with `native_mirror_edge_live_decode_stream_not_ready`.
 
 Do not solve edge gaps by shrinking the video, stretching a thumbnail, drawing a
 fake background, or placing transition pixels in the timeline area. The only
