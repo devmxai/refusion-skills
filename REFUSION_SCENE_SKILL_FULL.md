@@ -1313,6 +1313,13 @@ mirror-edge tiling, preview parity, live scrub parity, playback parity, and
 export parity. Current builds report these as unavailable until the real native
 renderer ships.
 
+The current bridge also defines `prepareZoomInCameraRenderPlan`. Agents and
+tooling should treat this as the real handoff shape for future native rendering:
+canvas dimensions, seam timing, outgoing/incoming source ranges, shutter
+settings, and mirror-edge tile overscan must be present. Current builds return
+`unsupported` from native code by design; do not work around that with a
+Flutter overlay, frozen frame, Gaussian blur, or speed-line decoration.
+
 Do not promise Zoom In Camera support until preview, live scrub, playback, and
 export all use the same compositor contract.
 
