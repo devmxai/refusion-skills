@@ -189,11 +189,36 @@ it must report `accumulatorImplemented=false` and block transition exposure with
 This is a hard quality boundary. Gaussian blur, poster-frame blur, line overlays,
 radial decorative strokes, or any still-image substitute are not motion blur.
 
+## Native Mirror-Edge Tiling Contract
+
+After temporal sample accumulation exists, camera/zoom/push transitions that can
+expose canvas borders must bind the outgoing and incoming accumulated frames
+into mirror-edge tile plans before shader/effect evaluation.
+
+Each tile plan must preserve:
+
+- source role: `outgoing` or `incoming`;
+- input accumulator id;
+- edge mode, usually `mirrorTile`;
+- output overscan scale;
+- `clipToCanvas=true`;
+- `allowBlackBorders=false`;
+- `allowFlutterOverlay=false`;
+- `allowTimelineOverlay=false`.
+
+The tiling session may be planned before a real implementation exists, but it
+must report `tilerImplemented=false` and block transition exposure with
+`native_mirror_edge_tiler_missing`.
+
+Do not solve edge gaps by shrinking the video, stretching a thumbnail, drawing a
+fake background, or placing transition pixels in the timeline area. The only
+professional path is canvas-clipped native mirror-edge tiling.
+
 ## Native Render Pass Graph Contract
 
-After exact decode requests and temporal accumulators exist, the compositor must
-lower the frame into a renderer-agnostic pass graph before any concrete
-transition implementation can claim support.
+After exact decode requests, temporal accumulators, and required mirror-edge
+tiling plans exist, the compositor must lower the frame into a renderer-agnostic
+pass graph before any concrete transition implementation can claim support.
 
 The pass graph must include the general phases required by professional video
 transitions:
