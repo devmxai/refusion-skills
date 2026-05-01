@@ -1365,6 +1365,14 @@ explicit source-rate support, the adapter must fail closed with a blocker
 instead of emitting a plan that would force frozen frames or ambiguous media
 sampling.
 
+Before any UI, agent, or script claims that a video transition can be exposed,
+it must run the full readiness preflight. The readiness chain is: native
+capabilities, strict render-session preparation, concrete source binding,
+frame samples, exact decode requests, dual-video decoder, temporal accumulator,
+mirror-edge tiler, render-pass graph, output surface, and
+preview/live-scrub/playback/export parity. A single green stage is not
+permission to ship a transition. Every stage must be able to advance.
+
 ## Native Frame Sample Contract
 
 Every renderer must sample live source time through the shared native frame
