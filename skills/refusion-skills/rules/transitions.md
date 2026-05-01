@@ -177,6 +177,21 @@ Planning an output surface is still not permission to expose a transition. The
 surface must report `rendererImplemented=false` until a concrete native renderer
 executes the graph for preview, Live Scrub, playback, and export parity.
 
+## Native Parity Output Contract
+
+After the output surface exists, the compositor must prove that the same
+transition output contract is valid for every required mode:
+
+- preview;
+- Live Scrub;
+- playback;
+- export.
+
+An agent must not describe a transition as implemented if one mode uses the
+native compositor while another mode uses a fallback. All four modes must share
+the same native transition output surface contract, and all four modes must be
+renderable before a preset/manual/AI transition is exposed.
+
 ## Cross Dissolve Primitive Contract
 
 For `crossDissolve`, reason as a true two-source alpha blend:
@@ -309,6 +324,11 @@ binds the pass graph to a canvas-clipped native transition output target and
 forbids Flutter overlays, timeline overlays, and PlatformView transform
 fallbacks. It also keeps `rendererImplemented=false`, so it cannot unlock a
 transition preset by itself.
+
+The current native foundation also defines `planParityOutputs`. This endpoint
+requires preview, Live Scrub, playback, and export to share the same output
+surface contract and keeps every mode blocked until a concrete native renderer
+can render all four modes without fallback divergence.
 
 Do not promise transition support until preview, live scrub, playback, and
 export all use the same compositor contract.
