@@ -1352,6 +1352,32 @@ incoming videos, derived from shutter angle, frame rate, and sample count.
 Gaussian blur, poster-frame blur, speed-line shapes, or thumbnail stretching are
 not valid substitutes.
 
+## Native Decode Request Contract
+
+After frame samples are planned, the compositor must turn them into explicit
+decode requests before any renderer can draw.
+
+Each decode request must carry:
+
+- source role: `outgoing` or `incoming`;
+- stable clip id;
+- stable asset id;
+- timeline sample time;
+- source sample time;
+- sample index;
+- decode mode `exactVideoFrame`;
+- whether it is the center sample for the evaluated timeline frame.
+
+The decode request contract must explicitly forbid:
+
+- thumbnail fallback;
+- generic poster frame fallback;
+- boundary-frame freezing;
+- hidden clamping to make missing source handles appear valid.
+
+If exact video frame decode is unavailable, the transition remains locked. Do
+not author or describe a visual workaround as if it were the real compositor.
+
 ## Cross Dissolve Primitive Contract
 
 For `crossDissolve`, reason as a true two-source alpha blend:
@@ -1467,6 +1493,11 @@ not a renderer and does not unlock transitions. It proves that the engine can
 turn a timeline frame inside a transition window into exact outgoing/incoming
 source samples and temporal shutter samples. Agents should treat this as the
 mandatory sampling truth for every future transition renderer.
+
+The current native foundation also defines `planFrameDecodeRequests`. This
+endpoint converts those samples into exact video decode requests for both
+sources, with thumbnail fallback and boundary freeze explicitly disabled. It is
+still planning only; it does not mean transitions are renderable.
 
 Do not promise transition support until preview, live scrub, playback, and
 export all use the same compositor contract.
