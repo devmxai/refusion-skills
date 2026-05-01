@@ -30,8 +30,9 @@ For a professional zoom-in camera transition:
 - avoid slow dissolves unless the user explicitly asks for a dissolve;
 - hide the cut with peak velocity, motion blur, and a small deterministic
   impact shake;
-- use live-surface zoom/blur/impact cues for preview. Do not render the whole
-  transition as static first/last-frame images.
+- require a real dual-video compositor. Do not fake this transition with
+  Gaussian blur, speed-line shapes, static boundary frames, or a transformed
+  single Android video surface.
 
 Baseline normalized recipe:
 
@@ -42,7 +43,9 @@ outgoing scale: 1.0 -> 3.0 by seam, ease-in
 incoming scale: 0.28 -> 1.0 after seam, ease-out
 opacity handoff: 0.42..0.58
 incoming lead: none as frozen pre-roll; B becomes live at the seam
-motion blur peak: 18
+shutter angle: 180..360 degrees
+motion blur: temporal shutter sampling or equivalent native/GPU compositor
+mirror edges: enabled before transform sampling
 impact shake: 5
 bridge darkness: 0.12
 ```
@@ -59,16 +62,15 @@ bridge darkness: 0.12
 - Do not let the incoming layer appear as a rounded card unless the prompt asks
   for a card transition.
 - Motion blur and shake must be deterministic so preview and export can match.
-  The current app preview uses live-surface blur plus speed-line cues; true
-  directional temporal blur belongs in the future native renderer/export path.
+  Gaussian blur and decorative speed-line shapes are not valid motion blur for
+  this preset.
 
 ## Current Engine Support
 
-The current ReFusion engine supports a preview-side `Zoom In Camera` preset that
-animates the native video preview surface over a 4s two-sided window, avoids
-generic thumbnail fallback, and uses exact boundary-frame extraction only for
-AI seeds or non-live fallback transitions.
+The current ReFusion engine intentionally gates `Zoom In Camera` out of the
+preset picker until a real professional video transition compositor exists.
+Existing saved Zoom transitions must not draw fake speed lines, frozen cards, or
+Gaussian transition blur.
 
-Export parity for this preset is still a required future step. Until export
-parity is documented as complete, do not promise that every transition effect
-exports exactly like preview.
+Do not promise Zoom In Camera support until preview, live scrub, playback, and
+export all use the same compositor contract.
