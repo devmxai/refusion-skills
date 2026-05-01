@@ -73,14 +73,11 @@ such as Cross Dissolve or Fade Black. Do not ship a separate fallback for each
 transition. First complete the general compositor, then expose transitions above
 that compositor.
 
-Temporary diagnostic exception: `Zoom In Pro` may be visible in the preset
-picker as an explicit product-testing experiment before the full native
-compositor is complete. It is not a production transition, not a real Zoom In
-Camera implementation, and not permission to unlock any other preset, manual
-transition, or AI transition path. It may transform only the currently live
-native preview surface and must not use thumbnails, frozen frames, Gaussian
-transition blur, decorative speed lines, timeline overlays, or fake secondary
-video surfaces. Agents must describe it as an experiment only.
+No diagnostic transition exception is currently active. `Zoom In Pro` was tried
+as a live-surface experiment and is now closed because a transformed single
+native preview surface cannot provide dual-video sampling, temporal shutter
+motion blur, mirror-edge tiling, or stable preview/Live Scrub/playback parity.
+Agents must not expose or recommend it as an available preset.
 
 ## Native Render Session Contract
 
@@ -468,11 +465,9 @@ authoring out of the picker until a real professional video transition
 compositor exists. Existing saved Zoom transitions must not draw fake speed
 lines, frozen cards, or Gaussian transition blur.
 
-Exception for testing: `Zoom In Pro` may be opened as a temporary live-surface
-experiment. It exists to test authoring flow and rough zoom timing only. It does
-not satisfy dual-video sampling, temporal shutter motion blur, mirror-edge
-tiling, output-surface ownership, or parity readiness. Do not tell users or
-other agents that this means professional Zoom In Camera support is complete.
+The `Zoom In Pro` test path is closed. It did not satisfy dual-video sampling,
+temporal shutter motion blur, mirror-edge tiling, output-surface ownership, or
+parity readiness, and it must not be used as a replacement for Zoom In Camera.
 
 The current app contains a strict `ProfessionalZoomCameraCompositorPlanner`
 contract for future native rendering. Agents must describe Zoom In Camera in
@@ -519,10 +514,18 @@ mirror-edge tiling, output-surface ownership, and parity outputs pass.
 
 The current native foundation also defines `planTemporalSampleAccumulator`.
 This endpoint inherits decoded sample counts and decoded buffer readiness from
-the dual decoder. It blocks with `native_temporal_sample_buffer_not_ready` when
-any shutter sample lacks a readable decoded output buffer. It still reports
-`accumulatorImplemented=false`, so agents must not claim real motion blur until
-native temporal shutter accumulation actually blends decoded pixels.
+the dual decoder, records accumulated decoded-buffer byte counts and checksums,
+and reports readiness only when both outgoing and incoming shutter sample sets
+are exactly decodable with readable output buffers. Agents must still not claim
+user-visible real motion blur until the downstream native renderer executes the
+render-pass graph onto the transition output surface.
+
+The current native foundation also defines `planMirrorEdgeTiling`. It consumes
+the temporal accumulator readiness signals, records overscan scales, and keeps
+black borders, Flutter overlays, timeline overlays, thumbnails, and
+single-surface substitutes forbidden. Passing mirror-edge readiness is not
+permission to expose a preset; render-pass graph execution, output-surface
+ownership, and preview/live-scrub/playback parity must still pass.
 
 The current native foundation also defines `planRenderPassGraph`. This endpoint
 turns exact decode requests into a pass graph and keeps
