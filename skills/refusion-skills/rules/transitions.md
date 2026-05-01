@@ -394,6 +394,29 @@ permission to expose a transition preset. A preset becomes valid only when the
 concrete native renderer executes this graph for preview, Live Scrub, and
 playback parity. Export remains a separate later phase until explicitly built.
 
+## Native Render Graph Executor Contract
+
+After the pass graph is planned, the native compositor must validate graph
+execution ownership before any concrete renderer draws pixels.
+
+The executor must prove:
+
+- pass order matches the professional sequence:
+  `decodeLiveVideoStreams`, `decodeExactVideoFrames`,
+  outgoing/incoming `temporalSampleAccumulator`, optional `mirrorEdgeTile`,
+  `transitionShaderEvaluation`, and `composeToTransitionSurface`;
+- pass dependencies only point to earlier passes in the graph;
+- the final pass is `composeToTransitionSurface`;
+- graph ownership is ready before any preview, Live Scrub, or playback mode can
+  claim parity.
+
+The executor may exist before a renderer exists. In that state it must return
+ordered pass execution states and `graphOwnershipReady=true` when the graph is
+well formed, but `canExecuteGraph=false` while `rendererImplemented=false`.
+It must also report `drawsPixels=false`. Do not expose a transition preset just
+because the executor can own the graph; a concrete native renderer must still
+attach and render the graph for preview, Live Scrub, and playback parity.
+
 ## Native Output Surface Contract
 
 After a render pass graph exists, the compositor must bind it to a single
