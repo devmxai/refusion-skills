@@ -1267,6 +1267,12 @@ If a transition needs a new capability, declare the missing capability and
 extend the engine. Do not fake support with thumbnails, still frames, decorative
 lines, Gaussian blur, or transformed single-surface previews.
 
+The native compositor has a renderer registry foundation. It may know a
+definition name while still rejecting it until the real renderer and required
+capabilities exist. Treat registry statuses literally: unsupported definition,
+missing capabilities, or renderer not implemented are blockers, not invitations
+to invent a visual fallback.
+
 ## Zoom In Camera Contract
 
 For a professional zoom-in camera transition:
