@@ -231,15 +231,23 @@ Each track must preserve:
 - video MIME type, dimensions, duration, and frame rate when available;
 - center sample source time;
 - exact frame decode probe status and decoded frame time;
+- decoded buffer probe status;
+- decoded buffer count;
+- whether every decoded output buffer is readable;
+- center-sample decoded buffer byte count and checksum;
 - `requiresExactFrameDecode=true`;
 - `allowThumbnailFallback=false`;
 - `allowBoundaryFreeze=false`.
 
 The decoder session must not advance from metadata alone. It must require a
-real source probe and a native exact-frame decode probe for the outgoing and
-incoming center samples. If either side cannot decode, it must block with a
-native decoder reason such as `native_dual_video_decoder_not_ready`,
-`native_exact_frame_decode_timeout`, or `native_exact_frame_decode_failed`.
+real source probe, a native exact-frame decode probe, and readable decoded
+`MediaCodec` output buffers for outgoing and incoming shutter samples. A
+decoded presentation timestamp without a readable output buffer is not
+professional transition readiness. If either side cannot decode or cannot prove
+readable decoded buffers, it must block with a native decoder reason such as
+`native_dual_video_decoder_not_ready`, `native_exact_frame_decode_timeout`,
+`native_exact_frame_decode_failed`, or
+`native_exact_frame_output_buffer_not_ready`.
 Passing this stage proves dual-video sampling readiness only; it is not
 permission to expose a transition preset until temporal accumulation,
 mirror-edge tiling, output surface, and parity stages also pass.
@@ -256,7 +264,9 @@ Each accumulator must preserve:
 - input decoder track role;
 - sample count;
 - decoded sample count;
+- decoded buffer count;
 - whether all input shutter samples are decodable;
+- whether all decoded input buffers are readable;
 - deterministic sample weights;
 - normalization mode, initially `weightedAverage`;
 - `requiresTemporalShutter=true` when the render plan requests temporal shutter
@@ -269,7 +279,9 @@ The accumulator session may be planned before a real implementation exists, but
 it must report `accumulatorImplemented=false` and block transition exposure with
 `native_temporal_sample_accumulator_missing`. If the decoder stage cannot prove
 that every shutter sample is decodable, it must also block with
-`native_temporal_sample_decode_not_ready`.
+`native_temporal_sample_decode_not_ready`. If the decoder stage cannot prove
+readable decoded buffers for every decoded sample, it must also block with
+`native_temporal_sample_buffer_not_ready`.
 
 This is a hard quality boundary. Gaussian blur, poster-frame blur, line overlays,
 radial decorative strokes, or any still-image substitute are not motion blur.
@@ -482,11 +494,20 @@ still planning only; it does not mean transitions are renderable.
 The current native foundation also defines `planDualVideoDecoderSession`. This
 endpoint groups exact outgoing/incoming decode requests into two native decoder
 tracks, requires the Android real-source probe, and performs a native
-`MediaCodec` center-sample decode probe on both sides. Agents must not
-substitute MediaMetadataRetriever thumbnails, cached posters, or frozen
-boundary stills for this contract. Even when dual-video sampling passes, the
-transition remains locked until temporal accumulation, mirror-edge tiling,
-output-surface ownership, and parity outputs pass.
+`MediaCodec` center-sample decode probe on both sides. It now also proves
+readable decoded output buffers by reporting decoded buffer counts, center
+buffer byte counts, and deterministic checksums. Agents must not substitute
+MediaMetadataRetriever thumbnails, cached posters, frozen boundary stills, or
+timestamp-only decode metadata for this contract. Even when dual-video
+sampling passes, the transition remains locked until temporal accumulation,
+mirror-edge tiling, output-surface ownership, and parity outputs pass.
+
+The current native foundation also defines `planTemporalSampleAccumulator`.
+This endpoint inherits decoded sample counts and decoded buffer readiness from
+the dual decoder. It blocks with `native_temporal_sample_buffer_not_ready` when
+any shutter sample lacks a readable decoded output buffer. It still reports
+`accumulatorImplemented=false`, so agents must not claim real motion blur until
+native temporal shutter accumulation actually blends decoded pixels.
 
 The current native foundation also defines `planRenderPassGraph`. This endpoint
 turns exact decode requests into a pass graph and keeps
@@ -501,9 +522,11 @@ fallbacks. It also keeps `rendererImplemented=false`, so it cannot unlock a
 transition preset by itself.
 
 The current native foundation also defines `planParityOutputs`. This endpoint
-requires preview, Live Scrub, playback, and export to share the same output
-surface contract and keeps every mode blocked until a concrete native renderer
-can render all four modes without fallback divergence.
+requires preview, Live Scrub, and playback to share the same output surface
+contract and keeps every interactive mode blocked until a concrete native
+renderer can render without fallback divergence. Export remains a later phase
+and must join the same contract before export support is claimed.
 
-Do not promise transition support until preview, live scrub, playback, and
-export all use the same compositor contract.
+Do not promise interactive transition support until preview, live scrub, and
+playback use the same compositor contract. Do not promise export support until
+the export renderer later joins that same contract.
