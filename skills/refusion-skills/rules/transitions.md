@@ -141,6 +141,14 @@ future agent can tell whether the problem is source binding, exact decode,
 temporal accumulation, mirror-edge tiling, output-surface ownership, or
 preview/live-scrub/playback/export parity.
 
+After source URI binding and before exact frame decode, every transition plan
+must pass a real video source probe. The probe must prove that each bound
+`sourceUri` is openable as video and contains a video track. Do not let an
+agent, UI, or renderer skip this step by using asset ids, generated proxies,
+thumbnails, poster frames, or boundary-frame stills. If the probe is not
+implemented or fails for either source, the readiness blocker is
+`sourceMediaProbe` and the transition must remain unavailable.
+
 ## Native Frame Sample Contract
 
 Every renderer must sample live source time through the shared native frame
