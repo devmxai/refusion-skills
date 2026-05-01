@@ -1327,6 +1327,35 @@ If any of these are missing, the correct answer is an explicit invalid or
 unsupported result. Do not repair the plan by freezing a boundary frame,
 stretching a thumbnail, or inventing hidden source timing.
 
+## Native Video Source Binding Contract
+
+Before exact decode requests can become a real decoder workload, every outgoing
+and incoming source must be bound to a concrete media URI or path.
+
+Each source binding must preserve:
+
+- source role: `outgoing` or `incoming`;
+- stable clip id;
+- stable asset id;
+- concrete `sourceUri`;
+- timeline start/end;
+- source start/duration;
+- `requiresConcreteSourceUri=true`;
+- `allowAssetIdOnlyDecode=false`;
+- `allowGeneratedProxyDecode=false`.
+
+`assetId` is identity metadata for project bookkeeping. It is not a video decode
+source. A future decoder must open the concrete `sourceUri` for each side of the
+transition. If a source URI is missing, the compositor must block the decoder
+path with `native_video_source_uri_missing`.
+
+Do not describe or author a transition that decodes from asset ids alone,
+generated proxies, cached thumbnails, timeline posters, or inferred media
+locations. The professional path is: source URI binding, exact frame samples,
+exact decode requests, dual-video decoder tracks, temporal accumulation,
+mirror-edge tiling when required, render-pass graph, output surface, and parity
+outputs.
+
 ## Native Frame Sample Contract
 
 Every renderer must sample live source time through the shared native frame
