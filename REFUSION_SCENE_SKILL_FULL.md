@@ -1511,15 +1511,27 @@ from the seam. Agents and renderers must look for:
 - `liveDecodeCoverageDecodedSampleCount`;
 - `liveDecodeCoverageDecodedBufferCount`;
 - `liveDecodeWindowReady=true`;
+- `liveDecodeStreamProbeImplemented=true`;
+- `liveDecodeStreamDecodedFrameCount`;
+- `liveDecodeStreamReadableBufferCount`;
+- `liveDecodeStreamFirstFrameTimeMs`;
+- `liveDecodeStreamLastFrameTimeMs`;
+- `liveDecodeStreamMinRequiredFrameCount`;
+- `liveDecodeStreamCoverageReady=true`;
 - `continuousSampleCoverageReady=true`.
 
 If `continuousSampleCoverageReady` is false, the transition is still blocked
-with `native_dual_video_live_decode_not_ready`. Do not treat decoded center
-frames, boundary frames, thumbnails, poster frames, or shutter sample probes as
-a playing transition. Android currently proves this stage with strict
-start/mid/end coverage samples for each live decode window; it is still
-decoder readiness only, not permission to expose presets before renderer,
-output surface, and preview/scrub/playback parity pass.
+with `native_dual_video_live_decode_not_ready`. If the sequential stream probe
+does not cover the live window, it also blocks with
+`native_dual_video_live_decode_stream_not_ready` or the exact probe reason such
+as `native_video_decode_stream_end_gap` or
+`native_video_decode_stream_output_buffer_not_ready`. Do not treat decoded
+center frames, boundary frames, thumbnails, poster frames, or shutter sample
+probes as a playing transition. Android currently proves this stage with both
+strict start/mid/end coverage samples and a sequential `MediaCodec` live-stream
+probe for each live decode window; it is still decoder readiness only, not
+permission to expose presets before renderer, output surface, and
+preview/scrub/playback parity pass.
 
 ## Native Temporal Sample Accumulator Contract
 
