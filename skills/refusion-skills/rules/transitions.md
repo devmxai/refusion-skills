@@ -223,13 +223,22 @@ Each track must preserve:
 - asset id;
 - exact decode request ids;
 - sample count;
+- concrete source probe readiness;
+- video MIME type, dimensions, duration, and frame rate when available;
+- center sample source time;
+- exact frame decode probe status and decoded frame time;
 - `requiresExactFrameDecode=true`;
 - `allowThumbnailFallback=false`;
 - `allowBoundaryFreeze=false`.
 
-The decoder session may be planned before the actual decoder exists, but it
-must report `decoderImplemented=false`. A planned decoder session is not
-permission to expose a transition preset.
+The decoder session must not advance from metadata alone. It must require a
+real source probe and a native exact-frame decode probe for the outgoing and
+incoming center samples. If either side cannot decode, it must block with a
+native decoder reason such as `native_dual_video_decoder_not_ready`,
+`native_exact_frame_decode_timeout`, or `native_exact_frame_decode_failed`.
+Passing this stage proves dual-video sampling readiness only; it is not
+permission to expose a transition preset until temporal accumulation,
+mirror-edge tiling, output surface, and parity stages also pass.
 
 ## Native Temporal Sample Accumulator Contract
 
@@ -458,9 +467,12 @@ still planning only; it does not mean transitions are renderable.
 
 The current native foundation also defines `planDualVideoDecoderSession`. This
 endpoint groups exact outgoing/incoming decode requests into two native decoder
-tracks and keeps `decoderImplemented=false`. Agents must not substitute
-MediaMetadataRetriever thumbnails, cached posters, or frozen boundary stills
-for this contract.
+tracks, requires the Android real-source probe, and performs a native
+`MediaCodec` center-sample decode probe on both sides. Agents must not
+substitute MediaMetadataRetriever thumbnails, cached posters, or frozen
+boundary stills for this contract. Even when dual-video sampling passes, the
+transition remains locked until temporal accumulation, mirror-edge tiling,
+output-surface ownership, and parity outputs pass.
 
 The current native foundation also defines `planRenderPassGraph`. This endpoint
 turns exact decode requests into a pass graph and keeps
