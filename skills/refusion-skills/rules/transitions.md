@@ -312,10 +312,12 @@ transitions:
 - transition shader/effect evaluation;
 - composition to the transition output surface.
 
-The pass graph may be planned before a renderer exists, but it must report that
-the renderer is not implemented. Planning a graph is not permission to expose a
-transition preset. A preset becomes valid only when the concrete native renderer
-executes this graph for preview, Live Scrub, playback, and export parity.
+The pass graph may be planned before a renderer exists, but it must propagate
+upstream blockers from decode, temporal accumulation, and mirror-edge tiling,
+then report that the renderer is not implemented. Planning a graph is not
+permission to expose a transition preset. A preset becomes valid only when the
+concrete native renderer executes this graph for preview, Live Scrub, and
+playback parity. Export remains a separate later phase until explicitly built.
 
 ## Native Output Surface Contract
 
@@ -332,8 +334,9 @@ The output-surface contract must explicitly forbid:
 - any renderer path that is not canvas-clipped and native-owned.
 
 Planning an output surface is still not permission to expose a transition. The
-surface must report `rendererImplemented=false` until a concrete native renderer
-executes the graph for preview, Live Scrub, playback, and export parity.
+surface must inherit upstream blockers and report `rendererImplemented=false`
+until a concrete native renderer executes the graph for preview, Live Scrub,
+and playback parity. Export remains a separate later phase.
 
 ## Native Parity Output Contract
 
@@ -343,12 +346,13 @@ transition output contract is valid for every required mode:
 - preview;
 - Live Scrub;
 - playback;
-- export.
+- future export.
 
 An agent must not describe a transition as implemented if one mode uses the
-native compositor while another mode uses a fallback. All four modes must share
-the same native transition output surface contract, and all four modes must be
-renderable before a preset/manual/AI transition is exposed.
+native compositor while another mode uses a fallback. Preview, Live Scrub, and
+playback must share the same native transition output surface contract before a
+preset/manual/AI transition is exposed. Export must later attach to the same
+contract; it must not fork into a different renderer.
 
 ## Cross Dissolve Primitive Contract
 
