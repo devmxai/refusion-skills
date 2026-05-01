@@ -1606,18 +1606,25 @@ professional path is canvas-clipped native mirror-edge tiling.
 
 ## Native Render Pass Graph Contract
 
-After exact decode requests, temporal accumulators, and required mirror-edge
-tiling plans exist, the compositor must lower the frame into a renderer-agnostic
-pass graph before any concrete transition implementation can claim support.
+After live stream decode readiness, exact decode requests, temporal
+accumulators, and required mirror-edge tiling plans exist, the compositor must
+lower the frame into a renderer-agnostic pass graph before any concrete
+transition implementation can claim support.
 
 The pass graph must include the general phases required by professional video
 transitions:
 
+- live video stream decode for outgoing and incoming sources;
 - exact video frame decode;
 - temporal sample accumulation for outgoing and incoming sources;
 - mirror-edge tile when the edge policy requires it;
 - transition shader/effect evaluation;
 - composition to the transition output surface.
+
+Temporal accumulation passes must depend on the live stream decode pass as well
+as exact decode request ids. A graph that contains exact frame decode but no
+`decodeLiveVideoStreams` pass is not allowed to claim professional motion blur
+or live video transition readiness.
 
 The pass graph may be planned before a renderer exists, but it must propagate
 upstream blockers from decode, temporal accumulation, and mirror-edge tiling,
