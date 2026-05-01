@@ -1691,6 +1691,34 @@ surface must inherit upstream blockers and report `rendererImplemented=false`
 until a concrete native renderer executes the graph for preview, Live Scrub,
 and playback parity. Export remains a separate later phase.
 
+## Native Surface Renderer Skeleton Contract
+
+After the graph executor and output surface are planned, the compositor may
+create a native surface-renderer skeleton. This skeleton must attach exactly
+three things to one contract:
+
+- the ordered render graph executor;
+- the canvas-clipped native transition output surface;
+- the final `composeToTransitionSurface` output pass.
+
+The skeleton is still not a concrete renderer. Until real pixels are drawn, it
+must report:
+
+- `surfaceRendererImplemented=true`;
+- `outputSurfaceAttached=true`;
+- `rendererImplemented=false`;
+- `rendersRealPixels=false`;
+- `drawsPixels=false`;
+- `canRenderSurface=false`.
+
+The required blocker is
+`native_transition_surface_renderer_pixels_missing`. Do not expose a transition
+preset, manual editor, or AI transition path just because a native surface is
+attached. The next professional milestone is a concrete native renderer that
+draws real transition pixels through this attached graph and surface. Flutter
+overlays, timeline-area drawing, transformed PlatformViews, still frames, fake
+motion blur, and decorative substitutes remain forbidden.
+
 ## Native Parity Output Contract
 
 After the output surface exists, the compositor must prove that the same
