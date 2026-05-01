@@ -1373,6 +1373,13 @@ mirror-edge tiler, render-pass graph, output surface, and
 preview/live-scrub/playback/export parity. A single green stage is not
 permission to ship a transition. Every stage must be able to advance.
 
+Any UI or agent-facing explanation of transition readiness must use the formal
+readiness presentation model. Do not collapse readiness into a vague "not
+ready" or "missing capabilities" string. Name the blocked stages in order so a
+future agent can tell whether the problem is source binding, exact decode,
+temporal accumulation, mirror-edge tiling, output-surface ownership, or
+preview/live-scrub/playback/export parity.
+
 ## Native Frame Sample Contract
 
 Every renderer must sample live source time through the shared native frame
