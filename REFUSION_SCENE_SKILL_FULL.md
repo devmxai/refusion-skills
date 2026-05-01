@@ -1637,7 +1637,9 @@ playback parity. Export remains a separate later phase until explicitly built.
 
 After a render pass graph exists, the compositor must bind it to a single
 professional output target: a native transition canvas surface clipped to the
-preview/export canvas.
+preview/export canvas. This surface must be bound to the final
+`composeToTransitionSurface` pass in the graph, not inferred from a loose
+surface id.
 
 The output-surface contract must explicitly forbid:
 
@@ -1646,6 +1648,20 @@ The output-surface contract must explicitly forbid:
 - transformed PlatformView fallback rendering;
 - drawing transition video into the timeline area;
 - any renderer path that is not canvas-clipped and native-owned.
+
+The output-surface plan must preserve:
+
+- render pass count;
+- output pass id;
+- output pass type, which must be `composeToTransitionSurface`;
+- output pass inputs;
+- `outputPassBound`;
+- `renderGraphOutputReady`.
+
+If the graph has no valid output pass, the compositor must block with
+`native_transition_output_pass_missing`. Do not route through a side surface,
+Flutter overlay, timeline overlay, or PlatformView transform to repair a
+missing graph output.
 
 Planning an output surface is still not permission to expose a transition. The
 surface must inherit upstream blockers and report `rendererImplemented=false`
