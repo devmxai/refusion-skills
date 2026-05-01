@@ -268,13 +268,19 @@ from the seam. Agents and renderers must look for:
 - `liveDecodeWindowTimelineEndMs`;
 - `liveDecodeWindowSourceStartMs`;
 - `liveDecodeWindowSourceEndMs`;
+- `liveDecodeCoverageSourceTimesMs`;
+- `liveDecodeCoverageDecodedSampleCount`;
+- `liveDecodeCoverageDecodedBufferCount`;
 - `liveDecodeWindowReady=true`;
 - `continuousSampleCoverageReady=true`.
 
 If `continuousSampleCoverageReady` is false, the transition is still blocked
 with `native_dual_video_live_decode_not_ready`. Do not treat decoded center
 frames, boundary frames, thumbnails, poster frames, or shutter sample probes as
-a playing transition.
+a playing transition. Android currently proves this stage with strict
+start/mid/end coverage samples for each live decode window; it is still
+decoder readiness only, not permission to expose presets before renderer,
+output surface, and preview/scrub/playback parity pass.
 
 ## Native Temporal Sample Accumulator Contract
 
