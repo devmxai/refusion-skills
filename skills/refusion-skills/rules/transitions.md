@@ -72,5 +72,11 @@ preset picker until a real professional video transition compositor exists.
 Existing saved Zoom transitions must not draw fake speed lines, frozen cards, or
 Gaussian transition blur.
 
+The current app contains a strict `ProfessionalZoomCameraCompositorPlanner`
+contract for future native rendering. Agents must describe Zoom In Camera in
+terms of real outgoing/incoming source-time samples, shutter-angle temporal
+sampling, and mirror-edge tiling. Do not describe it as an overlay, a card, a
+blurred thumbnail, or a decorative speed-line effect.
+
 Do not promise Zoom In Camera support until preview, live scrub, playback, and
 export all use the same compositor contract.
