@@ -128,7 +128,8 @@ generated proxies, cached thumbnails, timeline posters, or inferred media
   surface, surface renderer, frame render commands, renderer backend, renderer
   draw loop, transition shader evaluation, transition pixel workload, transition
   pixel frame buffer, transition pixel frame-buffer writer, pixel render
-  execution, native pixel output proof, and parity outputs.
+  execution, native pixel output proof, transition surface endpoint, and parity
+  outputs.
 
 Flutter production code must not hand-assemble compositor source maps inside
 large editor screens. Use the source-bound render-plan adapter contract:
@@ -147,21 +148,31 @@ it must run the full readiness preflight. The readiness chain is: native
   renderer, frame render commands, renderer backend, renderer draw loop,
   transition shader evaluation, transition pixel workload, transition pixel
   frame buffer, transition pixel frame-buffer writer, transition pixel render
-  execution, native pixel output proof, and preview/live-scrub/playback parity.
+  execution, native pixel output proof, transition surface endpoint, and
+  preview/live-scrub/playback parity.
   A single green stage is not
 permission to ship a transition. Every stage must be able to advance.
 
 Before preview, playback, or Live Scrub parity can claim success, the native
-pixel frame-buffer, frame-buffer writer, and pixel output proof gates must pass.
+pixel frame-buffer, frame-buffer writer, pixel output proof, and transition
+surface endpoint gates must pass.
 The frame-buffer gate must prove a native canvas-sized `rgba8888` buffer exists for
 `nativeTransitionCanvasSurface`, and must explicitly forbid synthetic pixels,
 poster frames, thumbnails, and boundary-frame freezes. The output proof must
-prove that a real frame was written into `nativeTransitionCanvasSurface`, and it
-must explicitly forbid Flutter overlays, timeline overlays, transformed
-platform-view previews, poster frames, thumbnails, or any other non-native
-output fallback. If shader inputs or pixel workloads exist but no real output
-frame has been written, the blocker is
+prove that a real source-derived frame was carried into the native output proof
+path, and it must explicitly forbid Flutter overlays, timeline overlays,
+transformed platform-view previews, poster frames, thumbnails, or any other
+non-native output fallback. The transition surface endpoint must attach an
+offscreen native `ImageReader`/`Surface` endpoint and accept the uploaded
+canvas-sized frame-buffer packet before parity is allowed to continue. If shader
+inputs or pixel workloads exist but no real output frame has been written, the
+blocker is
 `native_transition_pixel_output_proof_missing`.
+
+An offscreen endpoint upload is still not an interactive transition. It proves
+the native endpoint can receive the frame-buffer packet, but presets remain
+locked until preview, Live Scrub, and playback consume the same compositor
+output through their real interactive surfaces.
 
 Any UI or agent-facing explanation of transition readiness must use the formal
 readiness presentation model. Do not collapse readiness into a vague "not
