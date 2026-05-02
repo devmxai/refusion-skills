@@ -77,6 +77,9 @@ Rules:
 - route pause-time clock writes (transport/player stop points) through the same
   bridge adapter path; avoid direct screen-level coordinator mutations for
   transport-owned time updates.
+- apply the same rule to scrub lifecycle mutations (`scrubStart`,
+  `scrubUpdate`, `scrubEnd`, `confirmScrubSettled`) so timeline scrub state
+  enters the master clock through one adapter boundary.
 
 If an agent cannot explain an effect, transition, keyframe, or scrub result
 through this chain, it must stop and document the missing mapper/value
