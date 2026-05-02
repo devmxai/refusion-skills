@@ -83,6 +83,12 @@ video-layer bridges. Scene Contents manual edits belong to the source scene's
 stored `TimelineTrackTransitionData`, not a placeholder message or detached
 root transition.
 
+Manual Transition Scope must reuse the existing master video layer-scope
+Animate/FX vocabulary. `Animate` means core motion controls such as Opacity,
+Position, Scale, and Rotation; `FX` means effect controls such as Gaussian Blur.
+Do not reintroduce transition-preset behavior lanes like entry delay or
+outgoing/incoming scale as the primary Animate browser.
+
 No diagnostic transition exception is currently active. `Zoom In Pro` was tried
 as a live-surface experiment and is now closed because a transformed single
 native preview surface cannot provide dual-video sampling, temporal shutter
