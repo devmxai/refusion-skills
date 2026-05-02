@@ -1318,6 +1318,11 @@ authored manual lanes must still wait for the professional compositor before
 agents claim preview, Live Scrub, playback, or export renders the final
 transition.
 
+Manual must open directly from both root timeline bridges and Scene Contents
+video-layer bridges. Scene Contents manual edits belong to the source scene's
+stored `TimelineTrackTransitionData`, not a placeholder message or detached
+root transition.
+
 No diagnostic transition exception is currently active. `Zoom In Pro` was tried
 as a live-surface experiment and is now closed because a transformed single
 native preview surface cannot provide dual-video sampling, temporal shutter
