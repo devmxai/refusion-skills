@@ -1440,6 +1440,15 @@ Scrub, and playback independently. Missing presentation is a blocker such as
 `native_transition_liveScrub_interactive_surface_presentation_missing`, or
 `native_transition_playback_interactive_surface_presentation_missing`.
 
+Accepted presentation on a proof endpoint is still not production parity. A
+temporary `ImageReader` proof endpoint must identify itself as
+`interactiveNativePresentationProofSurface`; it is not a real
+`interactiveNativeTransitionSurface`. Preview, Live Scrub, and playback remain
+blocked with `native_transition_<mode>_production_surface_missing` until each
+mode binds and presents through its own production interactive transition
+surface. Do not expose, describe, or recommend any transition preset based on a
+proof endpoint, even if byte counts and checksums match.
+
 Any UI or agent-facing explanation of transition readiness must use the formal
 readiness presentation model. Do not collapse readiness into a vague "not
 ready" or "missing capabilities" string. Name the blocked stages in order so a
