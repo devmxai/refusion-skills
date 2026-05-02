@@ -841,6 +841,12 @@ Transitions remain locked until a concrete surface-upload renderer writes that
 packet into the final native surface and parity confirms preview, Live Scrub,
 and playback all read the same output.
 
+The surface-upload renderer contract may be structurally ready once a real
+packet exists. That is still not enough. The final blocker must move to the
+native surface endpoint: `native_transition_surface_endpoint_missing`. This
+keeps the risky endpoint attachment separate from packet creation and renderer
+readiness.
+
 Until a concrete native surface renderer exists, this gate must report:
 
 - `pixelOutputReady=false`;
