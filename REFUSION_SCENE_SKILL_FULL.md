@@ -1413,6 +1413,15 @@ the native endpoint can receive the frame-buffer packet, but presets remain
 locked until preview, Live Scrub, and playback consume the same compositor
 output through their real interactive surfaces.
 
+The offscreen proof endpoint must be named and treated as
+`offscreenNativeProofSurface`. It must never be described as the preview,
+Live Scrub, or playback output. Each interactive parity mode must instead bind
+its own `interactiveNativeTransitionSurface`; otherwise the readiness report
+must expose a mode-specific blocker such as
+`native_transition_preview_interactive_surface_missing`,
+`native_transition_liveScrub_interactive_surface_missing`, or
+`native_transition_playback_interactive_surface_missing`.
+
 Any UI or agent-facing explanation of transition readiness must use the formal
 readiness presentation model. Do not collapse readiness into a vague "not
 ready" or "missing capabilities" string. Name the blocked stages in order so a
