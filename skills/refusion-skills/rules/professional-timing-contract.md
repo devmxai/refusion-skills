@@ -82,6 +82,9 @@ Rules:
   enters the master clock through one adapter boundary.
 - read timeline-clock time for UI time-sync through that same boundary whenever
   possible; do not bypass the bridge for routine screen-level time reads.
+- keep direct coordinator access blocked in presentation code through:
+  - `scripts/master_clock_bridge_guard_check.sh`
+  - `docs/master_clock_bridge_guard_allowlist.txt`
 
 If an agent cannot explain an effect, transition, keyframe, or scrub result
 through this chain, it must stop and document the missing mapper/value
