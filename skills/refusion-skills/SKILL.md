@@ -94,8 +94,10 @@ rule file, and the example JSON in one document.
   scope in the existing focused TimelinePanel. Manual transform preview,
   playback, and Live Scrub may use the native `manualTransform` compositor path
   for real video pixels because interactive frame rendering is dispatched
-  through the transition render executor. Do not claim export parity until
-  export consumes the same compositor output.
+  through the transition render executor. Basic manual transform lanes must use
+  a single real source sample per output frame until a dedicated nonblocking
+  motion-blur renderer exists. Do not claim export parity until export consumes
+  the same compositor output.
 
 ## Current Engine Boundary
 

@@ -1300,3 +1300,9 @@ safe native minimum. The same `manualTransform` interactive path may render
 preview, Live Scrub, and playback frames because `renderInteractiveFrame` runs
 on the transition render executor, not on the Android UI thread. Export remains
 unclaimed until it consumes the same compositor output.
+
+Manual transform lanes must use one real video sample per output frame unless a
+dedicated nonblocking motion-blur renderer exists. Do not inherit the 7/9-sample
+temporal shutter policy from heavy zoom/distortion presets for basic scale,
+position, rotation, or opacity authoring, because repeated source extraction
+during scrub/play can freeze the transition surface.
