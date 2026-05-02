@@ -1464,6 +1464,25 @@ If the transition surface is not registered or presentation is delayed, retry
 the interactive render and report the native blocked reasons. Do not replace
 that failure with thumbnails, poster frames, or Flutter fake zoom overlays.
 
+The current `Distortion Zoom Transition In V1` implementation must not render
+on every playback or Live Scrub tick. Its temporary renderer extracts source
+video frames and composes bitmaps per request; device logs showed repeated
+codec start/stop/release churn when it was driven by playback. Until the engine
+has a cached, nonblocking native decoder/frame pipeline, this transition is
+stationary-preview only. Playback and Live Scrub must keep using the normal
+video preview path and must not repeatedly invoke the heavy transition renderer.
+Fail closed for unsupported modes rather than retrying until the app stalls.
+
+The user-facing replacement is `Zoom In Camera`. For the current mobile engine,
+author it as a real-video surface transition: transform the playing video
+surface with seam-aware scale, soft blur, and edge-safe overscan. Do not extract
+source frames per tick, do not freeze thumbnails, and do not call the temporary
+`distortionZoomInV1` renderer for playback or Live Scrub. The outgoing side
+zooms into the seam, the incoming side settles from a zoomed-in state, and scale
+must stay at or above `1.0` so the surface behaves like a motion-tiled zoom
+without black borders. A future fully native version must use cached dual-video
+decoder surfaces instead of repeated codec start/stop/release.
+
 Any UI or agent-facing explanation of transition readiness must use the formal
 readiness presentation model. Do not collapse readiness into a vague "not
 ready" or "missing capabilities" string. Name the blocked stages in order so a
