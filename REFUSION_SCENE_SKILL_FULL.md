@@ -118,11 +118,12 @@ rule file, and the example JSON in one document.
   rather than freezing boundary-frame thumbnails. Boundary frames are exact
   seeds/fallbacks for AI and non-live transitions, not a substitute for live
   playback.
-- New video transition authoring is locked until the native professional
-  compositor reports complete readiness: dual video sampling, temporal motion
-  blur, mirror-edge tiling, preview parity, Live Scrub parity, playback parity,
-  and export parity. Do not create preset, manual, or AI transition data before
-  that gate is open.
+- New preset/AI video transition creation is locked until the native
+  professional compositor reports complete interactive readiness: dual video
+  sampling, temporal motion blur, mirror-edge tiling, preview parity, Live
+  Scrub parity, and playback parity. Manual may open only as an authoring
+  scope in the existing focused TimelinePanel; do not claim preview/playback/
+  Live Scrub/export parity for manual lanes until the compositor consumes them.
 
 ## Current Engine Boundary
 
@@ -1287,12 +1288,11 @@ to invent a visual fallback.
 
 ## Strict Authoring Gate
 
-Do not create a new transition preset, manual transition lane, or AI-generated
-transition draft while the native compositor reports the foundation/unavailable
-capability set.
+Do not create a new transition preset or AI-generated transition draft while
+the native compositor reports the foundation/unavailable capability set.
 
-The app may show `Preset`, `Manual`, and `AI Transition` as locked roadmap
-entries, but they must not become clickable authoring paths until the native
+The app may show `Preset`, `Manual`, and `AI Transition`. `Preset` and
+`AI Transition` must not become clickable creation paths until the native
 capability bridge reports all of these:
 
 - dual video sampling;
@@ -1307,10 +1307,16 @@ preview/scrub/playback transition authoring on export once the native
 interactive compositor is complete, but do not claim export support until the
 export renderer joins the same output contract.
 
-This rule applies to every video transition, including apparently simple ones
-such as Cross Dissolve or Fade Black. Do not ship a separate fallback for each
-transition. First complete the general compositor, then expose transitions above
-that compositor.
+This render gate applies to every video transition, including apparently simple
+ones such as Cross Dissolve or Fade Black. Do not ship a separate fallback for
+each transition.
+
+Manual is an authoring-scope exception only: it may open the existing focused
+`TimelinePanel` transition timeline so users can add/edit lanes and keyframes
+before the compositor is complete. Do not describe that as visual parity. The
+authored manual lanes must still wait for the professional compositor before
+agents claim preview, Live Scrub, playback, or export renders the final
+transition.
 
 No diagnostic transition exception is currently active. `Zoom In Pro` was tried
 as a live-surface experiment and is now closed because a transformed single
@@ -2415,11 +2421,13 @@ overlay, a card, a blurred thumbnail, or a decorative speed-line effect.
 
 The app also has a native capability bridge at
 `com.refusion.app/professional_video_transition_compositor.getCapabilities`.
-No transition preset, manual transition path, or AI transition path may become
-clickable when that native response is missing any required capability: dual
-video sampling, temporal motion blur, mirror-edge tiling, preview parity, live
-scrub parity, and playback parity. Current builds report these as unavailable
-until the real native renderer ships. Export parity is tracked separately.
+No transition preset or AI transition path may become clickable when that
+native response is missing any required capability: dual video sampling,
+temporal motion blur, mirror-edge tiling, preview parity, live scrub parity,
+and playback parity. Current builds report these as unavailable until the real
+native renderer ships. Manual may open only as an editable timeline authoring
+scope; it must not be treated as rendered transition parity. Export parity is
+tracked separately.
 
 The current bridge defines generic `prepareRenderPlan`. Zoom In Camera is only
 one definition lowered into that general handoff shape: canvas dimensions, seam
