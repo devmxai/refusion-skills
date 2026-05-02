@@ -127,7 +127,8 @@ generated proxies, cached thumbnails, timeline posters, or inferred media
   mirror-edge tiling when required, render-pass graph, graph execution, output
   surface, surface renderer, frame render commands, renderer backend, renderer
   draw loop, transition shader evaluation, transition pixel workload, transition
-  pixel render execution, and parity outputs.
+  pixel frame buffer, pixel render execution, native pixel output proof, and
+  parity outputs.
 
 Flutter production code must not hand-assemble compositor source maps inside
 large editor screens. Use the source-bound render-plan adapter contract:
@@ -145,16 +146,20 @@ it must run the full readiness preflight. The readiness chain is: native
   mirror-edge tiler, render-pass graph, graph execution, output surface, surface
   renderer, frame render commands, renderer backend, renderer draw loop,
   transition shader evaluation, transition pixel workload, transition pixel
-  render execution, native pixel output proof, and
+  frame buffer, transition pixel render execution, native pixel output proof, and
   preview/live-scrub/playback parity. A single green stage is not
 permission to ship a transition. Every stage must be able to advance.
 
 Before preview, playback, or Live Scrub parity can claim success, the native
-pixel output proof must pass. It must prove that a real frame was written into
-`nativeTransitionCanvasSurface`, and it must explicitly forbid Flutter overlays,
-timeline overlays, transformed platform-view previews, poster frames,
-thumbnails, or any other non-native output fallback. If shader inputs or pixel
-workloads exist but no real output frame has been written, the blocker is
+pixel frame-buffer and pixel output proof gates must pass. The frame-buffer
+gate must prove a native canvas-sized `rgba8888` buffer exists for
+`nativeTransitionCanvasSurface`, and must explicitly forbid synthetic pixels,
+poster frames, thumbnails, and boundary-frame freezes. The output proof must
+prove that a real frame was written into `nativeTransitionCanvasSurface`, and it
+must explicitly forbid Flutter overlays, timeline overlays, transformed
+platform-view previews, poster frames, thumbnails, or any other non-native
+output fallback. If shader inputs or pixel workloads exist but no real output
+frame has been written, the blocker is
 `native_transition_pixel_output_proof_missing`.
 
 Any UI or agent-facing explanation of transition readiness must use the formal
@@ -660,14 +665,61 @@ If the workload is bound, the gate may advance while still reporting:
 
 Do not expose any transition preset, manual transition editor, or AI-generated
 transition just because shader inputs and pixel workload are bound. The next
-professional milestone is pixel render execution followed by native pixel
-output proof.
+professional milestone is a native pixel frame buffer followed by pixel render
+execution and native pixel output proof.
+
+## Native Transition Pixel Frame Buffer Contract
+
+After pixel workload binding, the compositor must allocate and own a native
+frame buffer for the final transition canvas before it attempts pixel execution.
+This is the contract that prevents a renderer from treating thumbnails, poster
+frames, cached boundary images, or synthetic placeholders as renderable video.
+
+The pixel-frame-buffer gate must preserve:
+
+- transition pixel frame buffer id;
+- transition pixel renderer id;
+- pixel program id;
+- output surface id;
+- output target and output framebuffer target, both targeting
+  `nativeTransitionCanvasSurface`;
+- frame buffer width and height matching the composition canvas;
+- frame buffer format, currently `rgba8888`;
+- frame buffer byte count;
+- `pixelWorkloadBound`;
+- `outputFramebufferBound`;
+- `frameBufferAllocated`;
+- `frameBufferReady`;
+- `frameBufferContainsRealPixels`;
+- `allowsSyntheticPixels=false`;
+- `allowsPosterFrame=false`;
+- `allowsThumbnailFallback=false`;
+- `allowsBoundaryFreeze=false`.
+
+Until a concrete native renderer owns and fills that buffer, this gate must
+report:
+
+- `frameBufferAllocated=false`;
+- `frameBufferReady=false`;
+- `frameBufferContainsRealPixels=false`;
+- `rendererImplemented=false`;
+- `canRenderPixels=false`;
+- `rendersRealPixels=false`;
+- `drawsPixels=false`;
+- `canRenderFrame=false`.
+
+The required blockers are `native_transition_pixel_frame_buffer_missing`,
+`native_transition_pixel_frame_buffer_pixels_missing`, and
+`native_transition_pixel_frame_buffer_renderer_missing`. Do not let a later
+stage skip this gate; if this gate is false, pixel execution and parity must
+remain blocked.
 
 ## Native Transition Pixel Render Execution Contract
 
-After pixel workload binding, the compositor must bind that workload to the
-native output framebuffer and attempt the concrete pixel-render execution path.
-This is the stage that remains blocked until real pixels are written.
+After the native pixel frame buffer is allocated and filled with real temporal
+video pixels, the compositor must bind that workload to the native output
+framebuffer and attempt the concrete pixel-render execution path. This is the
+stage that remains blocked until real pixels are written.
 
 The pixel-render execution gate must preserve:
 
@@ -680,6 +732,8 @@ The pixel-render execution gate must preserve:
   `nativeTransitionCanvasSurface`;
 - `pixelWorkloadBound`;
 - `outputFramebufferBound`;
+- `frameBufferReady`;
+- `frameBufferContainsRealPixels`;
 - whether pixel output was written.
 
 Until a concrete native renderer exists, this gate must report:
@@ -695,7 +749,9 @@ Until a concrete native renderer exists, this gate must report:
 - `drawsPixels=false`;
 - `canRenderFrame=false`.
 
-The required blockers are `native_transition_pixel_renderer_missing`,
+The required blockers include `native_transition_pixel_frame_buffer_not_ready`,
+`native_transition_pixel_frame_buffer_pixels_missing`,
+`native_transition_pixel_renderer_missing`,
 `native_transition_pixel_output_missing`, and
 `native_transition_renderer_pixels_missing`. Do not expose transitions before
 this gate can render real pixels and the pixel output proof can verify that the
