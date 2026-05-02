@@ -88,6 +88,10 @@ Rules:
 - where transition/preview diagnostics are emitted, include a
   `MasterFrameEvaluation` read snapshot for the active mode so debugging stays
   tied to the same time/value truth chain.
+- keep display/sample timeline notifier writes centralized in dedicated setter
+  methods; do not write those notifiers ad-hoc from feature-specific flows.
+- when setting idle timeline time from UI, synchronize paused master-clock time
+  through the bridge first so derived views and master truth stay in lockstep.
 
 If an agent cannot explain an effect, transition, keyframe, or scrub result
 through this chain, it must stop and document the missing mapper/value
