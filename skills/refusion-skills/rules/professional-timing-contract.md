@@ -28,6 +28,44 @@ scene clock
 If an animation cannot be explained by this chain, rewrite the Director Plan
 before writing Scene Program JSON.
 
+## Master Clock And Value Truth Rule
+
+For app-engine work, manual transitions, timeline editing, animation lanes,
+effects, keyframes, preview, playback, Live Scrub, or export planning, every
+displayed frame and every editable value must be explainable as:
+
+```text
+MasterTimeSnapshot
+-> TimeDomainMapper
+-> KeyframeEvaluator
+-> ValueTruthRegistry
+-> MasterFrameEvaluation
+```
+
+Rules:
+
+- `TimelineTime` remains the canonical project time scalar.
+- the existing `TimelineClockCoordinator` is the master clock foundation to
+  lift; do not replace it with a parallel coordinator or private preview clock.
+- root composition, source composition, scene, layer, transition, and source
+  media time domains must be explicit; do not pass a raw time value without
+  knowing its domain.
+- UI values are not renderer truth. Percent, pixels, degrees, blur intensity,
+  tile scale, opacity, and motion-blur values must pass through a documented
+  property definition before they reach an engine or renderer.
+- keyframes are evaluated from the projected domain time, then mapped through
+  the property definition into UI, engine, and renderer units.
+- manual transitions and effects must not invent private clocks, local
+  progress, bitmap render time, or renderer values outside this chain.
+- the first foundation implementation is domain-only: it may add time/value
+  models, mappers, registries, adapters, tests, and docs, but it must not touch
+  Stage5 native files, Live Scrub handoff paths, preview surface ownership,
+  GPU/Media3 effects, or transition pixel rendering.
+
+If an agent cannot explain an effect, transition, keyframe, or scrub result
+through this chain, it must stop and document the missing mapper/value
+definition instead of claiming professional parity.
+
 ## Required Timing Concepts
 
 ### Scene Clock

@@ -122,8 +122,13 @@ rule file, and the example JSON in one document.
   professional compositor reports complete interactive readiness: dual video
   sampling, temporal motion blur, mirror-edge tiling, preview parity, Live
   Scrub parity, and playback parity. Manual may open only as an authoring
-  scope in the existing focused TimelinePanel; do not claim preview/playback/
-  Live Scrub/export parity for manual lanes until the compositor consumes them.
+  scope in the existing focused TimelinePanel. Manual transform preview,
+  playback, and Live Scrub may use the native `manualTransform` compositor path
+  for real video pixels because interactive frame rendering is dispatched
+  through the transition render executor. Basic manual transform lanes must use
+  a single real source sample per output frame until a dedicated nonblocking
+  motion-blur renderer exists. Do not claim export parity until export consumes
+  the same compositor output.
 
 ## Current Engine Boundary
 
@@ -618,6 +623,44 @@ scene clock
 
 If an animation cannot be explained by this chain, rewrite the Director Plan
 before writing Scene Program JSON.
+
+## Master Clock And Value Truth Rule
+
+For app-engine work, manual transitions, timeline editing, animation lanes,
+effects, keyframes, preview, playback, Live Scrub, or export planning, every
+displayed frame and every editable value must be explainable as:
+
+```text
+MasterTimeSnapshot
+-> TimeDomainMapper
+-> KeyframeEvaluator
+-> ValueTruthRegistry
+-> MasterFrameEvaluation
+```
+
+Rules:
+
+- `TimelineTime` remains the canonical project time scalar.
+- the existing `TimelineClockCoordinator` is the master clock foundation to
+  lift; do not replace it with a parallel coordinator or private preview clock.
+- root composition, source composition, scene, layer, transition, and source
+  media time domains must be explicit; do not pass a raw time value without
+  knowing its domain.
+- UI values are not renderer truth. Percent, pixels, degrees, blur intensity,
+  tile scale, opacity, and motion-blur values must pass through a documented
+  property definition before they reach an engine or renderer.
+- keyframes are evaluated from the projected domain time, then mapped through
+  the property definition into UI, engine, and renderer units.
+- manual transitions and effects must not invent private clocks, local
+  progress, bitmap render time, or renderer values outside this chain.
+- the first foundation implementation is domain-only: it may add time/value
+  models, mappers, registries, adapters, tests, and docs, but it must not touch
+  Stage5 native files, Live Scrub handoff paths, preview surface ownership,
+  GPU/Media3 effects, or transition pixel rendering.
+
+If an agent cannot explain an effect, transition, keyframe, or scrub result
+through this chain, it must stop and document the missing mapper/value
+definition instead of claiming professional parity.
 
 ## Required Timing Concepts
 
@@ -2529,6 +2572,23 @@ empty authored transition.
 Do not promise interactive transition support until preview, live scrub, and
 playback use the same compositor contract. Do not promise export support until
 the export renderer later joins that same contract.
+
+Manual Transition Scope now has a native preview-only transform slice. When a
+Manual transition contains authored Animate/FX lanes, the app must build a
+`manualTransform` professional render plan and render through
+`ProfessionalVideoTransitionSurface`, not through Flutter thumbnail overlays.
+The first supported transform parameter is signed `Scale`: `0%` is normal video
+size, `+100%` is 2x zoom, and negative values shrink the sampled video above a
+safe native minimum. The same `manualTransform` interactive path may render
+preview, Live Scrub, and playback frames because `renderInteractiveFrame` runs
+on the transition render executor, not on the Android UI thread. Export remains
+unclaimed until it consumes the same compositor output.
+
+Manual transform lanes must use one real video sample per output frame unless a
+dedicated nonblocking motion-blur renderer exists. Do not inherit the 7/9-sample
+temporal shutter policy from heavy zoom/distortion presets for basic scale,
+position, rotation, or opacity authoring, because repeated source extraction
+during scrub/play can freeze the transition surface.
 
 ---
 
