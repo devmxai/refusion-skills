@@ -74,6 +74,9 @@ Rules:
   - `docs/master_clock_guard_allowlist.txt`
 - route native playback sample handoff through the master-clock bridge adapter
   instead of ad-hoc UI phase bootstrapping logic.
+- route pause-time clock writes (transport/player stop points) through the same
+  bridge adapter path; avoid direct screen-level coordinator mutations for
+  transport-owned time updates.
 
 If an agent cannot explain an effect, transition, keyframe, or scrub result
 through this chain, it must stop and document the missing mapper/value
