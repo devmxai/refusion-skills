@@ -1456,6 +1456,14 @@ Production interactive surfaces must be explicit render-plan data. Use
 Missing bindings, unknown modes, proof-surface kinds, or detached surfaces are
 not professional parity and must remain blocked.
 
+When an interactive professional transition is active in preview, the
+transition surface owns the canvas. The normal single-video preview surface is a
+competing native surface and must be suppressed for that transition window, so
+the user sees the compositor's A/B result rather than the untransitioned video.
+If the transition surface is not registered or presentation is delayed, retry
+the interactive render and report the native blocked reasons. Do not replace
+that failure with thumbnails, poster frames, or Flutter fake zoom overlays.
+
 Any UI or agent-facing explanation of transition readiness must use the formal
 readiness presentation model. Do not collapse readiness into a vague "not
 ready" or "missing capabilities" string. Name the blocked stages in order so a
