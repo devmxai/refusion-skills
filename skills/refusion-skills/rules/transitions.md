@@ -234,15 +234,14 @@ stationary-preview only. Playback and Live Scrub must keep using the normal
 video preview path and must not repeatedly invoke the heavy transition renderer.
 Fail closed for unsupported modes rather than retrying until the app stalls.
 
-The user-facing replacement is `Zoom In Camera`. For the current mobile engine,
-author it as a real-video surface transition: transform the playing video
-surface with seam-aware scale, soft blur, and edge-safe overscan. Do not extract
-source frames per tick, do not freeze thumbnails, and do not call the temporary
-`distortionZoomInV1` renderer for playback or Live Scrub. The outgoing side
-zooms into the seam, the incoming side settles from a zoomed-in state, and scale
-must stay at or above `1.0` so the surface behaves like a motion-tiled zoom
-without black borders. A future fully native version must use cached dual-video
-decoder surfaces instead of repeated codec start/stop/release.
+Do not expose a Flutter-side `Zoom In Camera` surface transform as the
+replacement. Android preview is a native PlatformView, and applying Flutter
+scale/blur/opacity to that surface can leak the preview into the timeline
+overlay and confuse native timeline scrub hit-testing. Zoom-family transitions
+must return only through a real native compositor surface that owns clipping,
+transform, effects, and output ordering inside Android. Until that exists,
+`Zoom In Camera` and `Distortion Zoom Transition In V1` remain hidden from the
+preset browser.
 
 Any UI or agent-facing explanation of transition readiness must use the formal
 readiness presentation model. Do not collapse readiness into a vague "not
