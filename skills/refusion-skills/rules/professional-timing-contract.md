@@ -68,9 +68,12 @@ Rules:
   - `lib/features/editor/domain/services/master_keyframe_value_evaluator.dart`
   - `lib/features/editor/domain/models/master_frame_evaluation_models.dart`
   - `lib/features/editor/presentation/services/master_frame_evaluation_read_adapter.dart`
+  - `lib/features/editor/domain/services/master_clock_native_bridge.dart`
 - keep preview-time clock-source guardrails active through:
   - `scripts/master_clock_guard_check.sh`
   - `docs/master_clock_guard_allowlist.txt`
+- route native playback sample handoff through the master-clock bridge adapter
+  instead of ad-hoc UI phase bootstrapping logic.
 
 If an agent cannot explain an effect, transition, keyframe, or scrub result
 through this chain, it must stop and document the missing mapper/value
