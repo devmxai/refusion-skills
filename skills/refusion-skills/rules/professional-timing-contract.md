@@ -118,6 +118,10 @@ Rules:
   - transition-role descriptors must include explicit real transition window
     binding and progress; if binding is missing or the playhead is outside the
     real window, projection must block with transition-window diagnostics.
+  - descriptor projection results must emit `LiveScrubParityReport` with
+    explicit `latencyBudgetState`; missing native latency telemetry must be
+    visible as `nativeMetricsUnavailable` or `nativeMetricsPending`, never
+    silently treated as healthy parity.
   This contract is domain-only in the current slice and does not authorize
   Stage5 behavior changes.
 
