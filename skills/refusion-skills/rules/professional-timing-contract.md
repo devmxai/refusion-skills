@@ -98,6 +98,11 @@ Rules:
 - enforce `_currentTime` assignment anchors through
   `master_clock_current_time_guard_check.sh` + allowlist policy; any new write
   path must be intentional and reviewed.
+- Master Live Scrub Professional is a connected continuation of this chain, not
+  a separate scrub engine. Live Scrub work must consume `MasterFrameEvaluation`
+  through an explicit adapter before it reaches Stage5 descriptors; it must not
+  create another clock, value registry, keyframe evaluator, transition-only
+  compositor, or still-frame fallback.
 
 If an agent cannot explain an effect, transition, keyframe, or scrub result
 through this chain, it must stop and document the missing mapper/value
