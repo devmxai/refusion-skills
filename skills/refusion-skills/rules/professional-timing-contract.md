@@ -122,6 +122,10 @@ Rules:
     explicit `latencyBudgetState`; missing native latency telemetry must be
     visible as `nativeMetricsUnavailable` or `nativeMetricsPending`, never
     silently treated as healthy parity.
+  - run `scripts/master_live_scrub_guard_check.sh` and keep
+    `docs/master_live_scrub_guard_allowlist.txt` intentional; any new scrub
+    bypass path (seek/media item/fallback/compositor coupling/clock source)
+    must fail guardrails by default.
   This contract is domain-only in the current slice and does not authorize
   Stage5 behavior changes.
 
