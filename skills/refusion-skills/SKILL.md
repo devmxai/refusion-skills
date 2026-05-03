@@ -109,6 +109,18 @@ rule file, and the example JSON in one document.
   scrub end), and reject Add Key when the playhead is outside the real active
   transition window (no silent clamp). Manual FX shader parity still requires
   dedicated native/Media3 slices.
+- Professional Canva layer unification is the next binding architecture rule:
+  video, image, text, shape, masks, and future generated objects must all
+  resolve to composition-layer truth before Animate/FX/Key/Value/Graph can
+  claim parity. Video must resolve through `MotionLayerKind.video` +
+  `MotionElementKind.videoClip` + source binding, not raw transport/player clip
+  identity. Manual Transition Add Key must use the same transition-local time
+  domain shown to the user. Manual Transition Scale/Opacity/Position/Rotation
+  must target outgoing/incoming/both layer instances through a unified target
+  resolver, then flow through Master Clock, Value Truth, and a shared Visual
+  Layer Program before preview/playback/Live Scrub/export renderer adapters.
+  Do not treat a PlayerView transform, thumbnail, poster, or boundary-frame
+  preview as final layer parity.
 
 ## Current Engine Boundary
 
