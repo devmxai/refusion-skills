@@ -108,6 +108,7 @@ Rules:
   - `lib/features/editor/domain/services/master_live_scrub_program_adapter.dart`
   - `lib/features/editor/domain/models/master_live_scrub_descriptor_models.dart`
   - `lib/features/editor/domain/services/master_live_scrub_descriptor_projection.dart`
+  - `lib/core/engine/stage5_native_transport_controller.dart` (`getLiveScrubCapabilities`)
   This contract is domain-only in the current slice and does not authorize
   Stage5 behavior changes.
 
