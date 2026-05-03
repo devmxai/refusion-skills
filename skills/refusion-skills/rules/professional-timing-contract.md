@@ -144,6 +144,10 @@ Rules:
     Stage5 `previewSources` config via a dedicated adapter
     (`LiveScrubRuntimeSurfaceConfigAdapter`), but this must remain a data-path
     projection step, not a parallel renderer or second clock.
+  - treat transition descriptor projection as a runtime bridge contract (not
+    preflight naming), and keep bridge diagnostics/reasons explicit
+    (`transition_runtime_bridge_mode:*`, `runtime_descriptor_bridge_v1`) so
+    legacy fallback assumptions do not leak back into production scrub logic.
   - when runtime merge is active, source-window mapping must stay deterministic
     (`targetId -> timeline/source window`) and reversible; descriptors without a
     valid source window must be ignored rather than guessed.
