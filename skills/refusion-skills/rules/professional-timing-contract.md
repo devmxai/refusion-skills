@@ -109,6 +109,9 @@ Rules:
   - `lib/features/editor/domain/models/master_live_scrub_descriptor_models.dart`
   - `lib/features/editor/domain/services/master_live_scrub_descriptor_projection.dart`
   - `lib/core/engine/stage5_native_transport_controller.dart` (`getLiveScrubCapabilities`)
+  - `LiveScrubDescriptorCapabilities` must gate descriptor parity claims; if a
+    native capability is missing, projection must emit explicit blockers instead
+    of pretending transform/effect/transition support.
   This contract is domain-only in the current slice and does not authorize
   Stage5 behavior changes.
 
