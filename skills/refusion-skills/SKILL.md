@@ -117,10 +117,17 @@ rule file, and the example JSON in one document.
   must use the same visible active transition window shown in the focused
   timeline. Do not expose a wider editor range that can scrub visually while
   Add Key validates against a narrower hidden window.
+  Transition-focus value-write rule: keyframe value edits in Manual Transition
+  scope must resolve and persist through scoped transition identity
+  (`transitionId + sourceSceneId`) rather than root-track-only lookup. UI value
+  changes that bypass scoped transition identity are invalid.
   Transition-focus compact-clip rule: when manual transition windows become
   very narrow, timeline clip chrome must degrade gracefully without `RenderFlex`
   overflow banners or hidden hit areas; preserve time truth and keep Add Key
   scoped to the exact visible transition window.
+  Transition-focus visual-width rule: narrow transition windows may use
+  minimum clip visual width in UI layout for legibility, but this must never
+  alter active transition start/end times or keyframe time truth.
 - Professional Canva layer unification is the next binding architecture rule:
   video, image, text, shape, masks, and future generated objects must all
   resolve to composition-layer truth before Animate/FX/Key/Value/Graph can
