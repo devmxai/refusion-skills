@@ -128,6 +128,10 @@ rule file, and the example JSON in one document.
   Transition-focus visual-width rule: narrow transition windows may use
   minimum clip visual width in UI layout for legibility, but this must never
   alter active transition start/end times or keyframe time truth.
+  Scene-scope video truth rule: scene-scope video timeline entries used by
+  manual transition authoring must remain real media clips (not placeholder
+  shells) so scoped outgoing/incoming preview-source windows bind to actual
+  media and Stage5 runtime state applies to the correct sources.
 - Professional Canva layer unification is the next binding architecture rule:
   video, image, text, shape, masks, and future generated objects must all
   resolve to composition-layer truth before Animate/FX/Key/Value/Graph can
