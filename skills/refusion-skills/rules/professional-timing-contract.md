@@ -134,10 +134,10 @@ Rules:
   - prefer `scripts/master_live_scrub_preflight_verify.sh` as the standard
     preflight bundle before checkpointing Master Live Scrub slices.
   - bridge validation may use read-only payload methods
-    `submitLiveScrubDescriptorPreflight` and
-    `getLiveScrubDescriptorPreflightSnapshot`; these are diagnostics contracts
-    only and must not be treated as active scrub renderer ownership.
-  - preflight submissions from `FusionXCleanUiScreen` must stay nonblocking and
+    `submitLiveScrubRuntimeBridgeSnapshot` and
+    `getLiveScrubRuntimeBridgeSnapshot`; these are diagnostics contracts only
+    and must not be treated as active scrub renderer ownership.
+  - runtime bridge submissions from `FusionXCleanUiScreen` must stay nonblocking and
     key-throttled; missing capability/snapshot issues should surface through
     parity diagnostics, not by pausing editor playback/scrub flows.
   - runtime scrub linkage may merge transition-scoped projected descriptors into
