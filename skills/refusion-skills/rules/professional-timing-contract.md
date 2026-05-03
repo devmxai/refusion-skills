@@ -128,6 +128,10 @@ Rules:
     must fail guardrails by default.
   - prefer `scripts/master_live_scrub_preflight_verify.sh` as the standard
     preflight bundle before checkpointing Master Live Scrub slices.
+  - bridge validation may use read-only payload methods
+    `submitLiveScrubDescriptorPreflight` and
+    `getLiveScrubDescriptorPreflightSnapshot`; these are diagnostics contracts
+    only and must not be treated as active scrub renderer ownership.
   This contract is domain-only in the current slice and does not authorize
   Stage5 behavior changes.
 
